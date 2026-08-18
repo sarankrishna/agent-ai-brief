@@ -1,0 +1,75 @@
+# Daily AI Technology Intelligence Briefing
+
+**Coverage:** 2026-08-17 16:43 to 2026-08-18 16:43 IST<br />
+**Retrieved:** 2026-08-18 16:43 IST
+
+## Executive Summary
+
+- Google documents a three-layer zero-trust pattern for agents that can mutate state: signed writes, gVisor isolation with no network egress, and deterministic semantic gates.
+- Meta and NVIDIA both push open local or specialised agents. Muse Glimmer targets a single consumer GPU; Nemotron 3.5 Lightning targets high-volume agent steps with MoE sparsity and speculative decoding.
+- Microsoft Foundry adds structured outputs, web search/fetch, MCP connector and tool search to Azure-hosted Claude deployments, reducing client-side agent scaffolding while retaining Azure residency options.
+- Agent reliability research is converging on policy composition, bounded authority, deterministic compilation and auditable traces rather than model scores alone.
+
+## Ranked Technical Developments
+
+### 1. Meta Muse Glimmer open weights for local agents
+
+**Meta AI Research, Aug. 17, 2026 | Announcement.** Meta released a 30B Apache 2.0 model for local agents, tool use, coding and multimodal input. Its roughly 4-bit form is under 20 GB and uses a DFlash-based drafter for speculative decoding. The announced runtime integrations and benchmark claims still need independent validation.<br />
+[Publisher page](https://research.meta.ai/blog/introducing-muse-glimmer-open-agentic-model)
+
+### 2. NVIDIA Nemotron 3.5 Lightning and NeMo Switchyard
+
+**NVIDIA, Aug. 17, 2026 | Open source / Announcement.** Lightning is a 30B-total, 3B-active hybrid MoE for specialised agent steps, with a 1M-token context and DFlash decoding. Switchyard routes calls across models by quality, latency and cost. NVIDIA reports up to 4x throughput and 30% faster completion, but these are vendor benchmarks.<br />
+[Publisher page](https://blogs.nvidia.com/blog/nemotron-lightning-switchyard-rtx-dgx/)
+
+### 3. Azure-hosted Claude gains an agent platform surface
+
+**Microsoft Foundry, Aug. 17, 2026 | Announcement.** Structured outputs, web search, web fetch, MCP connector and tool search are now available on Claude deployments hosted on Azure. This reduces bespoke orchestration, but MCP exchange, safety egress, tool allowlists and schema governance remain material review points.<br />
+[Publisher page](https://devblogs.microsoft.com/foundry/five-new-claude-capabilities-now-available-in-foundry/)
+
+### 4. Google publishes a zero-trust agent reference pattern
+
+**Google Developers Blog, Aug. 17, 2026 | Technical article / Security.** The open demo combines signed database mutations, gVisor sandboxing with no network access, and deterministic input/output policy checks. It is a useful boundary design, not evidence of resilience at enterprise scale.<br />
+[Publisher page](https://developers.googleblog.com/build-zero-trust-ai-agents-with-googles-agent-development-kit/)
+
+### 5. OpenAI describes a defensive response to rising AI-assisted cyber risk
+
+**OpenAI, Aug. 17, 2026 | Security / Announcement.** OpenAI describes read-only scanning, bounded automated response, least privilege, network isolation and human control for consequential actions. The incident narrative and threat forecasts are the company account, not an independent assessment.<br />
+[Publisher page](https://openai.com/index/the-defenders-window/)
+
+## Research and Technical Reports
+
+- **A Policy Algebra for Trust-Preserving Agentic AI Execution, submitted Aug. 17, 2026.** Defines composable restrictions over identity, tools, data, budgets, approvals and audit evidence. The preprint reports 94.8% intervention on violating events and 98.6% audit completeness in its evaluation; treat these as preprint results.<br />
+[arXiv:2608.16402](https://arxiv.org/abs/2608.16402)
+
+- **Bounded Semantic Planning and Deterministic Compilation for Reliable Enterprise Text-to-SQL, submitted Aug. 17, 2026.** Reports 97.4% adjudicated correctness versus 55.3% for a direct DDL-to-SQL baseline on a 38-question benchmark. The author explicitly notes that governed semantic artifacts are an extra input, so causality is not isolated.<br />
+[arXiv:2608.16663](https://arxiv.org/abs/2608.16663)
+
+## Open Source and Tools
+
+- **Google ADK Python 1.39.0, Aug. 17, 2026.** Adds model-declared capabilities, media-returning tools, preservation of Gemini thought signatures and parallel-call results, plus hot-path improvements. It also moves `pyarrow` out of the `gcp` extra.<br />
+[Release](https://github.com/google/adk-python/releases/tag/v1.39.0)
+
+- **NVIDIA SkillSpector, Aug. 17, 2026.** An Apache-2.0 scanner for agent skills and MCP-related risks, including prompt injection, exfiltration, privilege escalation and tool poisoning. Review its findings and HTTP trust model before adopting it.<br />
+[Repository](https://github.com/NVIDIA/SkillSpector)
+
+## Infrastructure, Security and Safety
+
+- **OpenAI and NVIDIA infrastructure plans, Aug. 17, 2026.** OpenAI announced approximately 8 GW-IT at PORTS-Pike, with phased delivery, closed-loop air cooling and NVIDIA-only compute. This is a multi-year capacity commitment, dependent on permits, grid, financing and construction.<br />
+[OpenAI announcement](https://openai.com/index/openai-joins-ports-pike-project/)
+
+- **Agent security architecture.** The strongest common signal across Google, OpenAI and the policy-algebra paper is that prompts are not security boundaries. Identity, sandboxing, network controls, deterministic policy, approvals and audit trails must sit outside model context.<br />
+[Google reference](https://developers.googleblog.com/build-zero-trust-ai-agents-with-googles-agent-development-kit/) · [OpenAI security post](https://openai.com/index/the-defenders-window/)
+
+## What to Watch Next
+
+- **Forward-looking:** Independent cost, quality and state-consistency evaluations of NeMo Switchyard and other model routers.
+- **Forward-looking:** Whether Muse Glimmer reaches practical latency and tool reliability across the announced local runtimes.
+- **Forward-looking:** Evidence from real deployments of policy-enforced agents, especially rollback behaviour, refusal quality and audit completeness.
+
+## Sources and Notes
+
+- Exact window: **2026-08-17 16:43 IST to 2026-08-18 16:43 IST**. Retrieval: **2026-08-18 16:43 IST**.
+- Primary publisher pages, GitHub releases and arXiv pages were opened. No unconfirmed report is included.
+- Several newsroom pages expose only a publication date, not a clock time. Date-only items are retained with that limitation stated.
+- Vendor benchmark figures are labelled as vendor-reported; arXiv items are preprints. No credentials, tokens, private data, email addresses or account information are included.
