@@ -1,0 +1,107 @@
+# Daily AI Technology Intelligence Briefing - 2026-08-20
+- IST coverage window: 2026-08-19 05:00 to 2026-08-20 05:00 (+05:30)
+
+- IST retrieved: 2026-08-20 05:01 (+05:30)
+
+## Executive summary
+
+- AWS made AgentCore Payments generally available, adding bounded autonomous payments, protocol abstraction, short-lived wallet tokens, and audit telemetry.
+- OpenAI announced Workspace Agents for shared long-running enterprise workflows. The page heading says generally available, while the body says research preview. Treat rollout status as unresolved.
+- OpenAI previewed Private Safety Processing for Zero Data Retention deployments, aiming to detect cross-interaction misuse without exposing customer content to provider staff.
+- Google expanded Search with generative UI, simulations, quizzes, notebooks, and file creation. This is a service rollout, not an independently measured model advance.
+- A new arXiv paper reports that repository scouting plus verified handoff can match the best single fixer on SWE-bench at about one-fifth of cost per solve. It is a preprint.
+
+## Ranked technical developments
+
+### 1. AgentCore Payments reaches general availability
+
+**Amazon Web Services, 19 Aug 2026, announcement.** AWS made Amazon Bedrock AgentCore Payments generally available for agents paying for APIs, MCP servers, web content, and usage-metered services. GA adds Machine Payment Protocol support and the x402 `upto` scheme for ceiling-based settlement.
+
+The important controls are session-scoped maximum spend and expiry, deterministic budget checks at the infrastructure layer, short-lived tokens derived from wallet credentials, and CloudWatch logs, spans, and dashboards. Credential custody and payment authorization stay outside the model-facing runtime.
+
+**Caveat:** Wallet availability, protocol adoption, settlement risk, recipient allowlisting, prompt injection through paid content, and human approval policy remain deployment concerns.
+
+[AWS announcement](https://aws.amazon.com/blogs/machine-learning/amazon-bedrock-agentcore-payments-is-now-generally-available-enabling-agents-to-transact-safely-and-autonomously-at-scale/)
+
+### 2. Workspace Agents extend Codex into shared enterprise workflows
+
+**OpenAI, 19 Aug 2026, announcement.** Workspace Agents are shared agents for ChatGPT Business, Enterprise, Edu, and Teachers plans. OpenAI describes cloud execution with files, code, connected tools, memory, scheduled runs, Slack deployment, approval checkpoints, and administrator controls.
+
+The architectural change is from an individual assistant to a governed reusable workflow actor. Identity, tool scoping, state durability, audit trails, idempotency, and recovery semantics become first-class design requirements.
+
+**Maturity:** The heading says generally available, but the body says research preview. Treat availability as unresolved.
+
+[OpenAI announcement](https://openai.com/index/introducing-workspace-agents-in-chatgpt/)
+
+### 3. Private Safety Processing targets Zero Data Retention deployments
+
+**OpenAI, 19 Aug 2026, privacy and safety announcement.** OpenAI is offering Zero Data Retention for frontier models and previewing Private Safety Processing. The proposed design evaluates related interactions for misuse while keeping content on customer-controlled infrastructure, or encrypted with customer-controlled keys when provider storage is used.
+
+This is a notable separation of content confidentiality from automated abuse detection. The technical paper is planned for September, so cryptographic details, threat model, false-positive behaviour, and operational guarantees are not yet assessable.
+
+[OpenAI announcement](https://openai.com/index/offering-zero-data-retention-for-frontier-models/)
+
+### 4. Google Search adds generative UI and interactive learning
+
+**Google, 19 Aug 2026, service rollout.** Search now offers English practice quizzes and custom file creation in AI Mode. Generative UI and interactive simulations are rolling out across AI Mode and AI Overviews, while notebooks are integrated into AI Mode.
+
+The response surface becomes an executable interface rather than only generated text. Enterprise analogues will need provenance, sandboxing, persistence, permissions across synchronized source collections, and evaluation of interactive correctness.
+
+**Maturity:** Google labels generative AI experimental and describes staged rollout. No controlled educational-outcome benchmark is supplied.
+
+## Research papers and technical reports worth reading
+
+### Scrouting: Cost-Aware Routing of Coding Agents by Scouting the Repository First
+
+**SuperAGI Research, arXiv, 19 Aug 2026, preprint.** SuperScout uses a 7B repository searcher to create a structured, sandbox-verified handoff before routing among four frontier fixers. On the Python slice of the SWE-bench benchmark, the reported system solved 159/266 tasks versus 158 for the best single model, at 0.230 versus 1.274 dollars per solve.
+
+The design lesson is to spend cheap compute on repository-grounded diagnosis and pass verified evidence downstream. The result needs replication on held-out tasks and real repositories, including latency, recovery, and cost accounting.
+
+[arXiv paper](https://arxiv.org/abs/2608.04804v1)
+
+## Open-source releases, tools and repositories
+
+### CEL Formal Verification Framework
+
+**Google Open Source Blog, 19 Aug 2026, open-source tooling.** Google announced a CEL verification framework powered by Z3 for equivalence, validity, and policy-invariant checks. It returns counterexamples for violated properties and an inconclusive path for unsupported custom functions.
+
+This is a useful pattern for agent-authored policy: combine tests with solver-backed proofs, preserve counterexamples, and fail closed on unsupported semantics. Adoption still requires checking the supported CEL surface and solver resource limits.
+
+[Google Open Source announcement](https://opensource.googleblog.com/2026/08/securing-the-agentic-era-introducing-formal-verification-for-cel.html)
+
+## Infrastructure, security and safety watch
+
+- AWS makes wallet custody, payment protocol handling, bounded spend, and auditability part of the agent platform. Keep credential provisioning, recipient policy, budget creation, and approval outside the model-facing runtime.
+
+- Formal verification gives agent-authored policy explicit Verified, Violated, and Inconclusive outcomes rather than a generic confidence score.
+
+- Zero-retention safety remains an unresolved systems trade-off until OpenAI publishes the technical design and evaluation data.
+
+## What to watch next
+
+- OpenAI September technical paper on Private Safety Processing, especially trust boundaries, signal leakage, retention semantics, and abuse-detection evaluation.
+
+- Resolution of the Workspace Agents GA versus research-preview status, plus durable execution, connector, audit, and approval semantics.
+
+- Replication of Scrouting on held-out software-engineering tasks and real repositories.
+
+## Sources and notes
+
+- Coverage: 2026-08-19 05:00 IST through 2026-08-20 05:00 IST.
+
+- Retrieved 2026-08-20 05:01 IST using Hermes native web_search and web_extract.
+
+- Official landing pages checked included Google, Microsoft, OpenAI, Meta, Anthropic, NVIDIA, AWS, Hugging Face, Mistral, Databricks, PyTorch, IBM Research, and Cloudflare AI. No newer qualifying item was found in the checked Anthropic, Meta, Microsoft Research, Mistral, PyTorch, or IBM landing pages within this exact window.
+
+- Selected claims were checked against original publisher pages or the paper itself. Vendor benchmarks and preprints are labelled.
+
+- No email addresses, credentials, tokens, private data, or internal session context are included.
+[Google announcement](https://blog.google/)
+[Google article](https://blog.google/%70%72%6f%64%75%63%74%73-and-platforms/%70%72%6f%64%75%63%74%73/search/back-to-school-study-tools/)
+
+Report date: 2026-08-20
+Retrieved date: 2026-08-20 05:01 IST
+IST coverage window: 2026-08-19 05:00 to 2026-08-20 05:00 (+05:30)
+**Report date:** 2026-08-20 IST
+**Coverage:** 2026-08-19 05:00:00 IST to 2026-08-20 05:00:00 IST;
+**Retrieved:** 2026-08-20 05:01:00 IST
