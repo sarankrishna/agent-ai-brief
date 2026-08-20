@@ -1,0 +1,106 @@
+# Daily AI Technology Intelligence Briefing - 2026-08-21
+
+**Report date:** 2026-08-21 IST
+**Coverage:** 2026-08-20 05:00:00 IST to 2026-08-21 05:00:00 IST;
+**Retrieved:** 2026-08-21 05:01 IST
+**Estimated reading time:** 8 minutes
+**Surfaced signals:** 4 ranked developments
+
+## Three signals that should change your mental model
+
+- **RAG is becoming evidence navigation.** Mistral exposes search, open, navigate, read, and grep as an agent loop over long documents. The design consequence is explicit evidence state, not only top-k chunks. [Mistral](https://mistral.ai/news/agentic-search)
+- **Disagreement can be a routing signal.** ORBITER uses fixed rankers to bound alternatives, then asks an agent to gather targeted evidence and an independent critic to check the decision. [ORBITER](https://arxiv.org/html/2608.18846)
+- **Multimodal agents are judged by artifacts and loops.** Meta describes visual inputs, tool use, artifact re-checking, and a preview set of WildArtifactBench tasks. [Meta](https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2)
+
+## Ranked technical developments
+
+### 1. Mistral Agentic Search
+- **Type:** Retrieval tooling release, 20 Aug 2026.
+- **Evidence:** Opened primary Mistral page. It reports FinanceBench and OfficeQA Pro results for search loops with document navigation.
+- **Maturity:** Available through Search Toolkit and Libraries; figures are vendor-reported.
+- **Why it matters:** The page reports GLM-5.2 at 51.9% on OfficeQA Pro with the full loop, 45.6 points above one-shot RAG, plus lower token use and latency in the stated tests.
+- **Architecture read:** Keep the index, but add typed navigation tools, provenance, traversal budgets, and replayable evidence state.
+- **What is not proven:** Private-corpus transfer, adversarial-document resilience, multilingual behaviour, and tail latency.
+- **Decision:** Experiment
+- **Source:** [Mistral](https://mistral.ai/news/agentic-search)
+
+### 2. Meta Muse Spark 1.2 multimodal agent workflows
+- **Type:** Multimodal model and workflow update, 20 Aug 2026.
+- **Evidence:** Opened primary Meta page. It describes visual coding, audio-visual understanding, tool use, a two-level robotics design, and 10 preview tasks from WildArtifactBench.
+- **Maturity:** Available in Meta Model API and Muse Code; the benchmark is an internal preview.
+- **Why it matters:** Output quality becomes an artifact property. The harness must observe, act, render, and validate.
+- **Architecture read:** Separate perception, planning, tool execution, artifact checks, and low-level actuation. Preserve the artifact and its evaluation evidence.
+- **What is not proven:** Independent results, full benchmark release, and live reliability.
+- **Decision:** Track
+- **Source:** [Meta AI Research](https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2)
+
+### 3. ORBITER conflict-aware agentic decisions
+- **Type:** New research submission, arXiv v1 dated 19 Aug 2026.
+- **Evidence:** Opened paper. It combines heterogeneous proposers, a disagreement report, targeted tools, hypothesis verification, and an independent critic. It reports up to 9.2% average gain across four cities.
+- **Maturity:** Research prototype.
+- **Why it matters:** Expensive reasoning is reserved for conflicts rather than spent on every candidate.
+- **Architecture read:** Use cheap rankers to bound choices, invoke deeper reasoning on disagreement, and retain evidence plus rejected alternatives.
+- **What is not proven:** Live cost, latency, shift, tool corruption, and transfer beyond delivery data.
+- **Decision:** Read deeply
+- **Source:** [arXiv](https://arxiv.org/html/2608.18846)
+
+### 4. Google CEL formal verification framework
+- **Type:** Open-source policy verification release, listed in the August 2026 Google Open Source Blog index.
+- **Evidence:** Opened primary page. It describes Z3-backed equivalence and validity checks, policy invariants, counterexamples, bounded checking, and explicit inconclusive results for unknown functions.
+- **Maturity:** Available framework; integration maturity remains to be assessed.
+- **Why it matters:** Generated policy changes need stronger assurance than example tests.
+- **Architecture read:** Gate policy changes with parse, semantic modelling, proof, counterexample, and fail-closed handling outside the model context.
+- **What is not proven:** Full CEL extension coverage, solver cost, and assurance for the surrounding enforcement system.
+- **Decision:** Experiment
+- **Source:** [Google Open Source Blog](https://opensource.googleblog.com/2026/08/securing-the-agentic-era-introducing-formal-verification-for-cel.html)
+
+## Signals by track
+
+- **Models:** Muse Spark 1.2 adds visual coding, audio-visual understanding, and robotics planning claims. [Meta](https://research.meta.ai/blog/multimodal-intelligence-of-muse-spark-1-2)
+- **Agents:** Bounded alternatives and evidence loops are prominent in ORBITER. [arXiv](https://arxiv.org/html/2608.18846)
+- **Developer tools:** Mistral exposes document navigation as a small tool surface. [Mistral](https://mistral.ai/news/agentic-search)
+- **Infrastructure:** Multimodal workflows need state for observations, tools, artifacts, and checks.
+- **Open source:** Google describes a Z3-backed CEL verifier. [Google](https://opensource.googleblog.com/2026/08/securing-the-agentic-era-introducing-formal-verification-for-cel.html)
+- **Data and evaluation:** WildArtifactBench tests artifact utility; ORBITER reports component ablations.
+- **Security and safety:** Put generated policy checks at enforcement boundaries and preserve counterexamples.
+- **Enterprise and economics:** More retrieval steps can reduce wasted searches, but corpus-specific cost curves remain open.
+
+## Architecture patterns emerging
+
+### Evidence-directed loops
+- **Evidence:** Mistral navigation and ORBITER verification both select the next step from current evidence.
+- **Implication:** Record the unresolved question, tool result, source location, and stopping rule at each step.
+- **Architect question:** Which loop steps are deterministic and replayable?
+
+### Artifact validation inside execution
+- **Evidence:** Meta re-checks visual artifacts; ORBITER has an independent critic and evidence record.
+- **Implication:** Validate outputs after tool execution instead of trusting the final model message.
+- **Architect question:** What is the authoritative validator, and does it fail closed?
+
+## Research and implementation worth your time
+
+### Mistral Agentic Search
+- **Why read:** Concrete design for long, table-heavy documents with reported quality, latency, and token measures.
+- **Inspect:** Tool schemas, traversal budgets, provenance, scanned PDFs, and index versus model navigation.
+- **Code/data/replication:** Open modules and a local starter app are stated; full benchmark replication is not independently checked.
+- **Source:** [Mistral](https://mistral.ai/news/agentic-search)
+
+### ORBITER
+- **Why read:** A useful pattern for routing expensive reasoning to disagreement.
+- **Inspect:** Decision points, proposer diversity, conflict reports, verification termination, critic independence, and ablations.
+- **Code/data/replication:** LaDe-P data and experiments are described; code availability was not established from the opened page.
+- **Source:** [arXiv](https://arxiv.org/html/2608.18846)
+
+### CEL Formal Verification Framework
+- **Why read:** Connects generated policy changes to invariants and counterexamples.
+- **Inspect:** Supported semantics, unknown functions, timeouts, CI integration, and stable counterexamples.
+- **Code/data/replication:** Google states the framework is available; a full independent replication recipe was not in the opened announcement.
+- **Source:** [Google Open Source Blog](https://opensource.googleblog.com/2026/08/securing-the-agentic-era-introducing-formal-verification-for-cel.html)
+
+## Evidence footer
+
+- Coverage:
+- Retrieved:
+- **Retrieval method:** Hermes native web_search and web_extract. Search snippets were discovery only; selected primary pages were opened.
+- **Source classes:** Official research and developer blogs, plus arXiv primary research.
+- **Evidence policy:** Vendor figures and availability claims are marked as limited or vendor-reported. No item was selected solely from an aggregator. The checked project lacked references/source-map.md, so the stated skill hierarchy was used.
