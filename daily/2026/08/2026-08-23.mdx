@@ -1,0 +1,102 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-08-23 IST
+**Coverage:** 2026-08-22 05:00:00 IST to 2026-08-23 05:00:00 IST;
+**Retrieved:** 2026-08-23 05:01 IST
+
+## Three signals that should change your mental model
+
+1. **Agent policy is becoming trace-aware.** AWS Dogwood adds temporal rules over prior tool events, including approval-before-action and ordering. [AWS](https://aws.amazon.com/blogs/opensource/introducing-dogwood-runtime-verification-for-ai-agents/)
+
+2. **The environment is a reusable platform layer.** Microsoft Orchard provides isolated Kubernetes environments for training and evaluation across real harnesses. [Microsoft Research](https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/)
+
+3. **Execution is a separate model tier.** NVIDIA Nemotron 3.5 Lightning combines a 30B MoE, 3B active parameters, speculative decoding, and model routing. [NVIDIA](https://developer.nvidia.com/blog/nvidia-nemotron-3-5-lightning-delivers-fast-accurate-specialized-task-execution-for-long-running-agents/)
+
+## Ranked technical developments
+
+### 1. Dogwood adds temporal policy for agent tool use
+
+- **Type:** Open governance language.
+- **Evidence:** AWS primary page describes Apache 2.0 code, Cedar compatibility, parser, validator, reference interpreter, and policies over event history. Its exact page date was not exposed, so none is asserted.
+- **Maturity:** Early release with AgentCore Policy support.
+- **Why it matters:** Request-only authorization cannot express prerequisites, quotas, or action order.
+- **Architecture read:** Place a stateful policy point between agents and tools; retain typed events and decisions.
+- **What is not proven:** Scale, latency, and coverage on real traces.
+- **Decision:** Read deeply.
+- **Source:** [AWS Dogwood](https://aws.amazon.com/blogs/opensource/introducing-dogwood-runtime-verification-for-ai-agents/)
+
+### 2. Orchard makes agent environments reusable
+
+- **Type:** Open framework and environment service.
+- **Evidence:** Microsoft describes Orchard Env, Kubernetes isolation, harness proxying, and released training data and methods. It reports Orchard-SWE at 69.7% on SWE-bench Verified and 73.0% with value reranking.
+- **Maturity:** Research release; results are author-reported.
+- **Why it matters:** Training in a simple loop can diverge from deployment in a stateful harness.
+- **Architecture read:** Standardize isolation, replay, telemetry, and evaluation as a platform service.
+- **What is not proven:** Cost, scale, failure recovery, and security outside the research setup.
+- **Decision:** Read deeply.
+- **Source:** [Microsoft Research: Orchard](https://www.microsoft.com/en-us/research/blog/orchard-an-open-framework-for-scalable-agentic-ai/)
+
+### 3. Nemotron targets the high-volume execution tier
+
+- **Type:** Open model and router release.
+- **Evidence:** NVIDIA describes 30B MoE, 3B active parameters, BF16/NVFP4, DFlash/DSpark, and Switchyard. It reports up to 4x output speed and 86% PinchBench accuracy.
+- **Maturity:** Weights, data, recipes, and deployment guides released; claims are NVIDIA-reported.
+- **Why it matters:** Repeated tool calls and validation need lower cost and latency than frontier planning.
+- **Architecture read:** Route by risk, capability, latency, and cost; define escalation.
+- **What is not proven:** Independent concurrency and workload results.
+- **Decision:** Experiment.
+- **Source:** [NVIDIA Technical Blog](https://developer.nvidia.com/blog/nvidia-nemotron-3-5-lightning-delivers-fast-accurate-specialized-task-execution-for-long-running-agents/)
+
+### 4. GitHub brings coding agents into shared Slack work
+
+- **Type:** Developer tool preview.
+- **Evidence:** GitHub Changelog dated 2026-08-21 describes investigation, implementation, sandbox validation, and pull-request creation from Slack.
+- **Maturity:** Public preview for Business and Enterprise.
+- **Why it matters:** Shared conversation becomes part of agent context, handoff, review, and interruption.
+- **Architecture read:** Require identity, budget, sandbox, approval, and stop controls; keep merge authority separate.
+- **What is not proven:** Reliability and context privacy at repository scale.
+- **Decision:** Track.
+- **Source:** [GitHub Changelog](https://github.blog/changelog/2026-08-21-the-new-github-copilot-experience-in-slack/)
+
+## Signals by track
+
+- **Models:** Smaller open models are being specialized for repeated execution.
+- **Agents:** Trace history and audited state are runtime inputs.
+- **Developer tools:** Coding agents are entering team collaboration surfaces.
+- **Inference:** MoE sparsity, quantization, drafting, and routing are converging.
+- **Open source:** Policy and environment infrastructure are being released alongside models.
+- **Data/evaluation:** Training inside the deployment harness is a central theme.
+- **Research:** State, execution, and audit are increasingly separated.
+- **Infrastructure:** Isolated environments are becoming reusable research primitives.
+- **Security and safety:** Trace policy complements sandboxing and human approval.
+- **Enterprise architecture:** Shared sessions need attribution, budgets, gates, and event records.
+
+## Architecture patterns emerging
+
+### 1. Policy over traces
+
+**Evidence:**** Dogwood uses prior events; GitHub shared sessions preserve attributable workflow history. **Implication:** Define event schemas, replay, and retention before adding tools. **Architect question:** Which events are authoritative for the next action?
+
+### 2. Environment as a service
+
+**Evidence:**** Orchard separates environments from training frameworks; Dogwood consumes tool events. **Implication:** Reuse isolation, capture, replay, and evaluation across agents. **Architect question:** Can one environment serve training, red-team work, and incident analysis?
+
+### 3. Planning and execution model split
+
+**Evidence:**** Nemotron and Switchyard route repeated work to smaller models; Orchard trains in real harnesses. **Implication:** Make escalation a contract. **Architect question:** What evidence requires a stronger model or a human?
+
+## Research and implementation worth your time
+
+1. **Dogwood:** Inspect temporal operators, event schemas, and MCP action schemas. Apache 2.0 code is linked by AWS; scale testing remains open.
+
+2. **Orchard:** Inspect lifecycle, isolation, proxying, replay, and released recipes. Rerun one small workflow before trusting portability.
+
+3. **LongHorizon-Harness:** Its manager, fresh-context executor, and read-only auditor report gains across several long-horizon benchmarks. [Paper and code](https://arxiv.org/abs/2608.01964v1). Workspace isolation is not implemented.
+
+4. **OneDayAgent:** Its decomposition, memory, and verification loop is evaluated on 104 tasks across five backends. [Paper](https://arxiv.org/abs/2608.05013v1); results are author-reported.
+
+5. **Nemotron and Switchyard:** Inspect model cards, draft selection, serving formats, routing, and workload latency. Local testing remains required.
+
+## Evidence footer
+
+Coverage: 2026-08-22 05:00:00 IST to 2026-08-23 05:00:00 IST. Retrieved: 2026-08-23 05:01 IST. Used Hermes native web_search and web_extract. Checked AWS Open Source Blog, Microsoft Research, NVIDIA Technical Blog, GitHub Changelog, and arXiv. Search results were discovery only. No exact date was asserted for AWS Dogwood or Microsoft Orchard because the opened pages did not expose one. Benchmark numbers are labelled as reported.
