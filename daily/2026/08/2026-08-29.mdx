@@ -1,0 +1,185 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-08-29 IST
+**Coverage:** 2026-08-28 05:00:00 IST to 2026-08-29 05:00:00 IST;
+**Retrieved:** 2026-08-29 05:00 IST
+
+Estimated reading time: 10 minutes. Surfaced-signal count: 7.
+
+## Three signals that should change your mental model
+
+### 1. Agent capability is increasingly a harness property
+
+**Why it matters:** Ahead targets credit assignment with environment feedback and corrective hints during training. Prime Agent reports large evaluation changes from persistent state, recursive delegation, and recovery.
+
+**Architectural consequence:** Version and evaluate model, harness, tools, context policy, and resource budget as one system.
+
+[Ahead](https://arxiv.org/abs/2608.24114) | [Prime Agent](https://arxiv.org/html/2608.23552v1)
+
+### 2. Trustworthy evaluation is becoming a confidential-computing problem
+
+**Why it matters:** Google DeepMind describes a pilot that keeps proprietary weights and evaluator prompts inside a cryptographically protected environment.
+
+**Architectural consequence:** Evaluation pipelines need attestation, sealed inputs, output controls, and explicit trust-root documentation.
+
+[Google DeepMind](https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/)
+
+### 3. Physical agents need a hard execution boundary
+
+**Why it matters:** Anthropic previews a standard for device discovery and control, while acknowledging that safety evaluation is ongoing.
+
+**Architectural consequence:** Treat model output as a proposal. Put capability checks, preconditions, rate limits, interlocks, audit logs, and approval at the device boundary.
+
+[Anthropic MHS](https://www.anthropic.com/news/model-hardware-standard-research-preview)
+
+## Ranked technical developments
+
+### 1. GitHub announces Copilot policy and cloud-agent changes
+
+- **Type:** Developer-platform policy and architecture change
+
+- **Evidence:** Tier 1, official GitHub Changelog, published August 28, 2026.
+
+- **Maturity:** Announced, future rollout.
+
+- **Why it matters:** GitHub plans to unify Copilot Chat on github.com, Mobile, and cloud agent no earlier than September 28. Cloud agent will use Sandbox, chat retention changes, and code-review Default will move from Lite to Balanced.
+
+- **Architecture read:** Enterprise control planes should model sessions, policy, retention, sandboxing, and usage budgets as one boundary.
+
+- **What is not proven:** The notice gives no performance, isolation, or migration detail for Sandbox.
+
+- **Decision:** Track
+
+- **Source:** [GitHub Changelog](https://github.blog/changelog/2026-08-28-upcoming-changes-to-github-copilot-policies-and-billing/)
+
+### 2. Ahead introduces step-aware supervision for agentic RL
+
+- **Type:** New research submission
+
+- **Evidence:** Tier 1, arXiv page listed in the August 28, 2026 recent-submission window.
+
+- **Maturity:** Research.
+
+- **Why it matters:** The paper reports +13.3 points on ALFWorld and +11.0 on WebShop at 7B over GRPO. It uses environment feedback at every step and corrective hints at selected error steps, with no privileged input at inference.
+
+- **Architecture read:** Training pipelines can add dense credit signals without changing the deployed agent interface.
+
+- **What is not proven:** Results cover three benchmarks and Qwen families. Transfer to uncontrolled tasks and independent repeatability are not established.
+
+- **Decision:** Read deeply
+
+- **Source:** [Ahead paper](https://arxiv.org/abs/2608.24114)
+
+### 3. SRPO turns self-reflection into training-time dense supervision
+
+- **Type:** New research submission
+
+- **Evidence:** Tier 1, arXiv page listed in the August 28, 2026 recent-submission window.
+
+- **Maturity:** Research; code link published.
+
+- **Why it matters:** SRPO uses hindsight reflection patches and teacher-forced scoring of on-policy rollouts. It reports 73.3% on AIME24 with 8% of scaled-SFT FLOPs, plus agent benchmark results.
+
+- **Architecture read:** Reflection can be training-only. Reset-with-memory avoids context drift while keeping inference simple.
+
+- **What is not proven:** The method does not establish reliable self-correction in open-ended tasks.
+
+- **Decision:** Read deeply
+
+- **Source:** [SRPO paper](https://arxiv.org/abs/2608.23493)
+
+### 4. Google pilots double-blind evaluation in confidential computing
+
+- **Type:** Evaluation infrastructure
+
+- **Evidence:** Tier 1, official Google DeepMind post, dated August 27, 2026.
+
+- **Maturity:** Pilot.
+
+- **Why it matters:** Confidential Space keeps evaluator prompts hidden from the model provider and weights hidden from the evaluator, addressing contamination and IP exposure.
+
+- **Architecture read:** Evaluation services need remote attestation and an explicit residual-trust model spanning cloud, hardware, signing, and benchmark governance.
+
+- **What is not proven:** This is a pilot, not broad availability or a multi-GPU solution.
+
+- **Decision:** Track
+
+- **Source:** [Google DeepMind](https://deepmind.google/blog/piloting-the-worlds-first-double-blind-ai-evaluations/)
+
+### 5. Anthropic previews the Model Hardware Standard
+
+- **Type:** Physical-agent interoperability standard
+
+- **Evidence:** Tier 1, official Anthropic post, dated August 27, 2026.
+
+- **Maturity:** Restricted research preview.
+
+- **Why it matters:** MHS defines drivers, discovery, read/write primitives, and MCP, CLI, and code-file control paths. An early example reports 99.3% laser-lock recovery.
+
+- **Architecture read:** A common device layer can reduce bespoke integration, but safe use needs typed capabilities, physical limits, deterministic scripts, and an actuation gateway.
+
+- **What is not proven:** It is not open source; license and timeline are undisclosed; non-programmable hardware is unsupported.
+
+- **Decision:** Track
+
+- **Source:** [Anthropic](https://www.anthropic.com/news/model-hardware-standard-research-preview)
+
+## Signals by track
+
+- **Models:** No qualifying new model release was verified in the checked primary pages for this window.
+
+- **Agents:** Ahead and SRPO target training-time credit assignment for long-horizon agents.
+
+- **Developer tools:** GitHub is consolidating Copilot chat and cloud-agent experiences, with policy and retention implications.
+
+- **Infrastructure:** Google moves model assessment toward attested execution environments.
+
+- **Open source:** SRPO links code, but repository contents were not inspected.
+
+- **Data and evaluation:** Double-blind evaluation addresses prompt and weight confidentiality; benchmark governance remains separate.
+
+- **Research:** Recent papers treat harness persistence and training orchestration as first-class system components.
+
+- **Enterprise and economics:** GitHub’s notice makes agent usage, seat assignment, and overage controls operational concerns.
+
+- **Governance:** Physical and confidential-computing systems shift safety claims toward enforceable boundaries and auditability.
+
+## Architecture patterns emerging
+
+### Training-time privileged context, inference-time simplicity
+
+**Evidence:** Ahead and SRPO use extra information during training while keeping it absent at inference.
+
+**Implication:** Separate training observability from the runtime tool contract, with leakage tests.
+
+**Architect’s question:** What remains valid under distribution shift?
+
+### Model proposal, runtime authority
+
+**Evidence:** MHS standardizes device access while its preview emphasizes safety evaluation and limits.
+
+**Implication:** Put authorization and physical invariants in a deterministic control plane.
+
+**Architect’s question:** Can the contract be enforced identically in simulation, staging, and hardware?
+
+## Research and implementation worth your time
+
+1. **Ahead.** Inspect error-step analysis, environment-feedback construction, and GRPO integration. Code or repeatability package availability was not verified.
+
+2. **SRPO.** Inspect reset-with-memory, teacher scoring, and FLOP accounting. The paper links [code](https://github.com/Galleons2029/SRPO); repository contents were not inspected.
+
+3. **Prime Agent.** Inspect persistent REPL state, recursive agents, recovery, accounting, and evaluation semantics. The paper links [code](https://github.com/PrimeIntellect-ai/prime-agent). It predates this window and is context only.
+
+4. **Double-blind evaluation pilot.** Inspect the confidential-computing trust model and attestation workflow. The linked technical report was not retrieved.
+
+## Evidence footer
+
+- **Coverage window:** 2026-08-28 05:00:00 IST to 2026-08-29 05:00:00 IST.
+
+- **Retrieval time:** 2026-08-29 05:00 IST.
+
+- **Retrieval method:** Native Hermes web_search and web_extract using the configured web path.
+
+- **Source classes:** Official company/developer posts and arXiv primary pages. Search was discovery only; selected claims were checked against opened primary pages.
+
+- **Evidence policy:** Claims are included only where supported by opened sources. Exact IST publication time was not established for August 27 pages, so they are identified as current primary-source context rather than asserted as within-window events. No secrets, credentials, private data, or invented source counts.
