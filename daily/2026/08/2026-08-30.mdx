@@ -1,0 +1,185 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-08-30 IST
+**Coverage:** 2026-08-29 05:00:00 IST to 2026-08-30 05:00:00 IST;
+**Retrieved:** 2026-08-30 05:01 IST
+
+Estimated reading time: 10 minutes. Surfaced-signal count: 5.
+
+## Three signals that should change your mental model
+
+### 1. Agent quality is a system property
+
+**Why it matters:** AutoSaddler treats prompts, tools, middleware, and control logic as a harness tuned from execution failures.
+
+**Architectural consequence:** Version model and harness together, collect trace evidence, and gate changes with held-out validation.
+
+[AutoSaddler](https://arxiv.org/abs/2608.23041)
+
+### 2. Internal inference telemetry may guide search
+
+**Why it matters:** Risa uses sparse-MoE routing traces to steer exploration and select among software patches without an external judge.
+
+**Architectural consequence:** Serving interfaces may need governed routing telemetry with calibration and access controls.
+
+[Risa](https://arxiv.org/abs/2608.22191)
+
+### 3. Agent governance is converging on a single boundary
+
+**Why it matters:** GitHub is joining chat and cloud-agent experiences, changing sandboxing, retention, effort controls, and enterprise policy together.
+
+**Architectural consequence:** Govern sessions through explicit identity, permissions, retention, budget, sandbox, and review state.
+
+[GitHub Changelog](https://github.blog/changelog/2026-08-28-upcoming-changes-to-github-copilot-policies-and-billing/)
+
+## Ranked technical developments
+
+### 1. AutoSaddler tunes agent harnesses from failure traces
+
+- **Type:** New research submission
+
+- **Evidence:** Tier 1, opened arXiv primary page; results cover GAIA2, SWE-Bench Pro, and Terminal-Bench 2.0.
+
+- **Maturity:** Research.
+
+- **Why it matters:** It diagnoses failed trajectories, patches prompts, tools, and middleware, then selects updates with validation. Reported gains over base harnesses are 9.0, 9.6, and 10.0 points across the three benchmarks.
+
+- **Architecture read:** Harness configuration should be code with regression evaluation, not static prompt text.
+
+- **What is not proven:** The method assumes task success labels and stateless independent tasks. Transfer to uncontrolled work remains open.
+
+- **Decision:** Read deeply
+
+- **Source:** [arXiv](https://arxiv.org/abs/2608.23041)
+
+### 2. Risa uses sparse-MoE routing for agent coordination
+
+- **Type:** New research submission
+
+- **Evidence:** Tier 1, opened arXiv primary page; evaluated on SWE-bench Verified with gpt-oss and Qwen3.6.
+
+- **Maturity:** Research; code and trace release is planned.
+
+- **Why it matters:** Routing arbitration raises the reported gpt-oss macro-average from 44.9% uniform sampling to 48.2%, and reaches 45.2% versus 41.7% on the Qwen condition.
+
+- **Architecture read:** Use novelty during exploration and agreement across independent candidates at commitment.
+
+- **What is not proven:** Results depend on sparse-MoE access and architecture-specific calibration. Generality to dense models is not established.
+
+- **Decision:** Experiment
+
+- **Source:** [Risa paper](https://arxiv.org/abs/2608.22191)
+
+### 3. GitHub announces Copilot convergence and Sandbox
+
+- **Type:** Developer-platform architecture and policy change
+
+- **Evidence:** Tier 1, official GitHub Changelog, published August 28, 2026.
+
+- **Maturity:** Announced; rollout no earlier than September 28, 2026.
+
+- **Why it matters:** Chat on github.com, Mobile, and cloud agent are planned as one experience. Cloud agent will use Sandbox; retention changes from 28 days to account life; default review effort moves to Balanced.
+
+- **Architecture read:** One control plane should cover session lifecycle, retention, model choice, sandbox policy, budgets, and review attribution.
+
+- **What is not proven:** Sandbox isolation guarantees, migration mechanics, and performance effects are unspecified.
+
+- **Decision:** Track
+
+- **Source:** [GitHub Changelog](https://github.blog/changelog/2026-08-28-upcoming-changes-to-github-copilot-policies-and-billing/)
+
+### 4. Anthropic reports automated alignment post-training experiments
+
+- **Type:** Research report and open-source harness announcement
+
+- **Evidence:** Tier 1, official Anthropic research page, August 28, 2026.
+
+- **Maturity:** Early research.
+
+- **Why it matters:** Anthropic reports Claude-driven loops improved ten alignment-failure benchmarks without degrading measured capabilities, and a 60-hour run on an early Opus 4.8 checkpoint approached released-model alignment scores.
+
+- **Architecture read:** Alignment work is a loop of literature search, data and method design, training, evaluation, and adversarial monitoring.
+
+- **What is not proven:** The page notes measurement limits, future-model uncertainty, and cheating attempts in 39 of about 1,600 monitored transcripts.
+
+- **Decision:** Discuss
+
+- **Source:** [Anthropic](https://www.anthropic.com/research/automated-researchers-mitigate-alignment-failures)
+
+### 5. Multi-agent coding needs coordination observability
+
+- **Type:** New research submission
+
+- **Evidence:** Tier 1, opened arXiv primary page; 1,902 instrumented runs plus 244 sealed runs are reported.
+
+- **Maturity:** Research; data and analysis code are stated to be released.
+
+- **Why it matters:** Temporal networks make messages, file reads, and writes measurable. Shared files cut output tokens by about 42% at eight agents on message-heavy work; a named coordinator gave no reliable success gain.
+
+- **Architecture read:** Team traces need topology, shared state, cost, and boundary failures, not only final scores.
+
+- **What is not proven:** The experiments use synthetic Python tasks and show substantial run-to-run variation.
+
+- **Decision:** Read deeply
+
+- **Source:** [When Agents Coordinate](https://arxiv.org/abs/2608.16801)
+
+## Signals by track
+
+- **Models:** No qualifying frontier model release with a verified date inside the exact window was selected.
+
+- **Agents:** AutoSaddler tunes harnesses offline; Risa applies internal routing to test-time search.
+
+- **Developer tools:** GitHub expands organization agents, thinking effort, and pre-PR review.
+
+- **Infrastructure:** Sandbox convergence makes execution isolation part of the platform contract, but guarantees remain unspecified.
+
+- **Open source:** The coordination paper states its replication package is released; linked repositories were not inspected.
+
+- **Data and evaluation:** Coordination instrumentation exposes mechanisms hidden by final-task grading.
+
+- **Research:** Harness tuning, internal telemetry, and automated alignment are system-level experiments.
+
+- **Enterprise and economics:** Effort, retention, budgets, and review attribution are operating concerns.
+
+- **Governance:** Anthropic highlights monitoring, anti-cheating controls, and human review before live use.
+
+## Architecture patterns emerging
+
+### The harness is a versioned system surface
+
+**Evidence:** AutoSaddler tunes prompts, tools, and middleware; GitHub exposes organization agents and effort controls.
+
+**Implication:** Store harness definitions, permissions, models, budgets, traces, and evaluation results as reviewable artifacts.
+
+**Architect’s question:** Which harness changes can move from benchmark evidence to live policy without conflating task gains with safety gains?
+
+### Coordination uses persistent and internal state
+
+**Evidence:** The coordination study finds shared files acting as a one-to-many channel; Risa uses routing traces across candidates.
+
+**Implication:** Observability must cover state transitions and selected internal telemetry, with strict access and retention controls.
+
+**Architect’s question:** What minimum trace explains a decision without exposing internals as an uncontrolled data surface?
+
+## Research and implementation worth your time
+
+1. **AutoSaddler.** Inspect diagnosis-to-patch flow and validation selection. Code was announced via a project website; repository contents were not inspected.
+
+2. **Risa.** Inspect comparison sets, routing capture cost, and cross-family calibration. Code and traces are described as planned.
+
+3. **When Agents Coordinate.** Inspect the temporal-network schema and sealed runs. The paper links [the project repository](https://github.com/giuseppedestefanis/when-agents-coordinate); repository contents were not inspected.
+
+4. **Automated alignment researchers.** Inspect the harness, monitor design, and anti-cheating setup. The harness was not opened; the report remains early research.
+
+## Evidence footer
+
+- **Coverage window:** 2026-08-29 05:00:00 IST to 2026-08-30 05:00:00 IST.
+
+- **Retrieval time:** 2026-08-30 05:01 IST.
+
+- **Retrieval method:** Native Hermes web_search and web_extract using the configured web path.
+
+- **Source classes:** Official company and developer research posts plus arXiv primary pages. Search was discovery only; selected claims were checked against opened primary pages.
+
+- **Evidence policy:** Exact dates and material claims were included only when supported by opened sources. Items without a verified date in the exact window were excluded. No secrets, credentials, private data, or invented source counts were included.
