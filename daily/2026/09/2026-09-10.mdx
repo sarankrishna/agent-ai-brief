@@ -1,0 +1,181 @@
+**Report date:** 2026-09-10 IST
+**Coverage:** 2026-09-09 05:00:00 IST to 2026-09-10 05:00:00 IST;
+**Retrieved:** 2026-09-10 05:00 IST
+
+## Three signals that should change your mental model
+
+### 1. Agent security is becoming a separate enforcement plane
+
+Meta describes Muse as an agent running in an isolated cloud VM, with a host-side Sentinel controlling connector actions and network egress. The design includes scoped connector workers, credential surrogation, egress checks, SSRF controls, and tainted-egress approval logic.
+
+**Why it matters:** Prompt-injection resilience is shifting from model behaviour to capability architecture.
+
+**Architectural consequence:** Treat the model as an untrusted planner. Put credentials, approvals, egress, audit, and durable state behind independently enforced boundaries.
+
+**Primary source:** https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse
+
+### 2. Agent serving is a state-management problem
+
+vLLM reports that AgentX traces contain long sessions, median 142K-token inputs, short outputs, more than 96 percent prefix-cache hit rate, and substantial subagent branching.
+
+**Why it matters:** Conventional request-level load balancing can reduce performance by destroying cache locality.
+
+**Architectural consequence:** Make session identity, cache residency, turn number, and likely branching visible to the serving scheduler. Benchmark end-to-end interactivity, not isolated tokens per second.
+
+**Primary source:** https://vllm.ai/blog/2026-09-08-vllm-agentx
+
+### 3. Production frameworks are converging on resumability and explicit consent
+
+Google ADK for Kotlin 1.0 combines hierarchical agents, context compaction, resumable sessions, generated type-safe tools, and human confirmation flows across server-side Kotlin and Android.
+
+**Why it matters:** Agent state and approval are becoming first-class application concerns rather than prompt conventions.
+
+**Architectural consequence:** Design workflows as durable state machines with typed tools, explicit approval transitions, and recoverable execution.
+
+**Primary source:** https://developers.googleblog.com/announcing-adk-for-kotlin-10-building-production-ready-ai-agents-in-kotlin-android-and-beyond/
+
+## Ranked technical developments
+
+### 1. Meta publishes the Muse security architecture
+- **Type:** Product architecture and security engineering
+- **Evidence:** Tier 1, official Meta AI Research post, dated 2026-09-08
+- **Maturity:** Product launch design; Confidential VM remains planned
+- **Why it matters:** Muse separates the agent runtime from safety classifiers, credential storage, connector workers, durable state, and Sentinel. The agent receives surrogate tokens, while Sentinel authorizes concrete connector calls and network requests.
+- **Architecture read:** This is a capability-security design: untrusted execution, narrow privileged brokers, centralized policy decisions, direct user approvals, and audited egress.
+- **What is not proven:** The post gives no independent effectiveness rates for prompt-injection resistance, false approvals, or long-term reliability.
+- **Decision:** Read deeply
+- **Source:** https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse
+
+### 2. vLLM reports an agentic-serving stack optimized around prefix reuse
+- **Type:** Inference systems and benchmark analysis
+- **Evidence:** Tier 1 for the vLLM design; results attributed to public SemiAnalysis AgentX
+- **Maturity:** Open implementation and reproducible benchmark path
+- **Why it matters:** vLLM reports up to 130K total tokens per GPU-second on one tested configuration and up to 376 tokens per second interactivity on another.
+- **Architecture read:** Shared hierarchical KV storage, packed cache layouts, model-specific parallelism, and sticky session routing matter more than generic queue balancing.
+- **What is not proven:** Results are best configurations for selected models and hardware, not a universal cost comparison.
+- **Decision:** Read deeply
+- **Source:** https://vllm.ai/blog/2026-09-08-vllm-agentx
+
+### 3. Red Hat AI 3.5 packages governance with multi-tenant serving
+- **Type:** Enterprise AI platform release
+- **Evidence:** Tier 1, official Red Hat announcement, dated 2026-09-09
+- **Maturity:** GA capabilities mixed with technical previews
+- **Why it matters:** The release combines evaluation, priority-aware serving, canary rollout and rollback, multi-tenancy, observability, token showback, tool calling, and hybrid-cloud serving.
+- **Architecture read:** Evaluation and policy checks sit before deployment, while scheduling, RBAC, tracing, and cost attribution sit in the runtime platform.
+- **What is not proven:** The post provides no independent SLO data or comparative operating cost. Several agent features are previews.
+- **Decision:** Track
+- **Source:** https://www.redhat.com/en/blog/red-hat-ai-35-scaling-and-governing-ai-agents-production
+
+### 4. Google releases ADK for Kotlin 1.0
+- **Type:** Developer framework release
+- **Evidence:** Tier 1, official Google Developers Blog, dated 2026-09-09
+- **Maturity:** Core 1.0 GA; some Android integrations are beta
+- **Why it matters:** Kotlin Multiplatform provides backend-neutral orchestration, hierarchical agents, resumability, context compaction, compile-time tool schemas, and explicit confirmation flows.
+- **Architecture read:** Typed tool generation and durable sessions make agent workflows more testable and recoverable. Progressive disclosure of skills addresses context growth.
+- **What is not proven:** This is not an independent production benchmark or compliance assessment.
+- **Decision:** Experiment
+- **Source:** https://developers.googleblog.com/announcing-adk-for-kotlin-10-building-production-ready-ai-agents-in-kotlin-android-and-beyond/
+
+### 5. GitHub adds centrally managed sandbox policy to Copilot for JetBrains
+- **Type:** Developer-tool security and workflow release
+- **Evidence:** Tier 1, official GitHub Changelog, dated 2026-09-08
+- **Maturity:** Public preview for managed sandbox policy; OpenTelemetry settings GA
+- **Why it matters:** Enterprise policy can control filesystem and network access, proxies, developer-tool access, and keychain access. Policy diagnostics make enforcement observable.
+- **Architecture read:** IDE agents are being treated as managed execution environments. Terminal and editor context are becoming one coordinated agent surface.
+- **What is not proven:** Preview semantics and cross-platform coverage may change. No independent attack or escape-rate measurements are provided.
+- **Decision:** Track
+- **Source:** https://github.blog/changelog/2026-09-08-enterprise-managed-sandbox-in-copilot-for-jetbrains/
+
+### 6. AWS separates long-term memory ingestion from event storage
+- **Type:** Managed agent platform API
+- **Evidence:** Tier 1, official AWS announcement, dated 2026-09-08
+- **Maturity:** Available in supported AgentCore Memory regions
+- **Why it matters:** IngestData accepts conversational or JSON payloads and sends them directly through long-term-memory extraction without creating a short-term event. Results can be inspected, streamed, and redriven.
+- **Architecture read:** Memory pipelines can distinguish operational event retention from durable semantic memory.
+- **What is not proven:** The announcement does not specify extraction quality, latency, retention economics, or isolation guarantees.
+- **Decision:** Track
+- **Source:** https://aws.amazon.com/about-aws/whats-new/2026/09/agentcore-memory-direct-ingest/
+
+### 7. AWS exposes document-level ACL diagnostics for managed RAG
+- **Type:** Retrieval governance and operations
+- **Evidence:** Tier 1, official AWS announcement, dated 2026-09-09
+- **Maturity:** Available feature
+- **Why it matters:** The new ACL APIs distinguish retrieval failure from permission misconfiguration and expose the permissions attached to an ingested document.
+- **Architecture read:** Retrieval authorization needs inspectable, user-specific evidence at the document boundary.
+- **What is not proven:** ACL visibility does not prove that every retrieval path, answer, or downstream tool action enforces the same policy.
+- **Decision:** Discuss
+- **Source:** https://aws.amazon.com/about-aws/whats-new/2026/09/amazon-bedrock-knowledge-base-debugging-document-access-control/
+
+### 8. Codex runs routine quantum-chip calibration workflows
+- **Type:** Applied agent case study
+- **Evidence:** Tier 1, OpenAI case study with MIT EQuS, dated 2026-09-08
+- **Maturity:** Narrow research workflow
+- **Why it matters:** The agent selected measurement parameters, operated software controlling a six-qubit chip, analyzed results, and refined or saved subsequent measurements.
+- **Architecture read:** Skills, instrument APIs, iterative measurement loops, and human escalation form a useful pattern for bounded scientific automation.
+- **What is not proven:** The case reports difficulty with weak or noisy signals and provides no controlled comparison of time, accuracy, or failure rates.
+- **Decision:** Track
+- **Source:** https://openai.com/index/codex-quantum-computing-experiments/
+
+## Signals by track
+
+- **Models:** OpenAI reports GPT-5.6 Sol assisting a bounded quantum calibration workflow. This is an application case study, not a new model release.
+- **Agents:** Muse uses separate policy authority, connector brokers, and direct UI approval rather than conversational consent alone.
+- **Developer tools:** Google ADK Kotlin 1.0 makes resumable sessions and compile-time generated tool schemas part of the framework surface.
+- **Infrastructure:** vLLM emphasizes session-aware routing, distributed KV pools, cache offload, and model-specific parallelism.
+- **Open source:** vLLM links implementation changes and public AgentX infrastructure for reproducibility.
+- **Data and evaluation:** Red Hat EvalHub targets prompt injection, jailbreaks, safety, and tool-calling reliability. AWS adds ACL inspection for managed RAG.
+- **Research:** Procedural Graphs proposes self-evolving execution structures; SRPO treats jointly consumed multi-agent outputs as one policy-optimization action.
+- **Enterprise and economics:** Red Hat adds token showback and priority-aware serving. vLLM frames cache locality and interactivity as cost drivers.
+- **Governance:** GitHub adds managed sandbox controls and policy diagnostics. Red Hat describes canary rollout, rollback, RBAC, and gateway-level tool controls.
+
+## Architecture patterns emerging
+
+### 1. Independent policy and capability planes for agents
+- **Evidence:** Meta Sentinel and privileged services; GitHub managed sandbox policy; Red Hat gateway-level tool controls.
+- **Implication:** Put authorization, egress, credentials, and runtime boundaries outside the model context. Bind approvals to exact capabilities.
+- **Architect's question:** Which actions can be auto-allowed from scope and data-flow evidence, and which require direct user approval?
+
+### 2. Persistent state is becoming a schedulable systems resource
+- **Evidence:** vLLM session-aware KV retention and routing; Google resumable sessions; AWS direct long-term-memory ingestion.
+- **Implication:** Serving, workflow state, memory extraction, and resumption should expose lifecycle and locality metadata.
+- **Architect's question:** What state is authoritative, what can be recomputed, and what retention policy applies to each class?
+
+### 3. Agent operations are converging on closed-loop evaluation and controlled rollout
+- **Evidence:** Red Hat evaluation, canary deployment, rollback, tracing, and showback; Google confirmation flows; AWS ACL diagnostics.
+- **Implication:** Production readiness requires evidence linking policy, tool correctness, performance, cost, and deployment transitions.
+- **Architect's question:** Can a failed evaluation block promotion and produce a reproducible explanation?
+
+## Research and implementation worth your time
+
+### Procedural Graphs for LLM agents
+- **Why read:** It turns procedural knowledge into an explicit execution structure and evolves it from failed and successful trajectories.
+- **Inspect:** Graph localization, refiner commit rule, held-out validation, and comparisons with memory baselines.
+- **Code/data/reproduction:** arXiv provides HTML, PDF, and TeX source. Reproduction status is not established by the abstract.
+- **Link:** https://arxiv.org/abs/2609.09153
+
+### SRPO for multi-agent policy optimization
+- **Why read:** It aligns the RL update unit with the set of agent outputs that jointly causes a transition.
+- **Inspect:** Set-ratio construction, clipping stability, dynamic routing, and event-reduction diagnostics.
+- **Code/data/reproduction:** arXiv provides HTML, PDF, and TeX source. No code link is identified on the opened abstract page.
+- **Link:** https://arxiv.org/abs/2609.08452
+
+### vLLM AgentX serving analysis
+- **Why read:** It provides a concrete systems vocabulary for agentic serving: prefix pressure, cache locality, P/D ratio, session stickiness, and hierarchical KV offload.
+- **Inspect:** Workload characteristics, best-configuration methodology, retention policies, and queue-balance versus locality tradeoffs.
+- **Code/data/reproduction:** The post links public AgentX infrastructure and vLLM implementation changes.
+- **Link:** https://vllm.ai/blog/2026-09-08-vllm-agentx
+
+### Muse security architecture
+- **Why read:** It is a detailed reference architecture for operating an agent over sensitive data while assuming prompt injection and model error.
+- **Inspect:** Sentinel approval binding, surrogate credentials, eBPF taint propagation, browser isolation, and runtime boundaries.
+- **Code/data/reproduction:** The post describes mechanisms but does not provide a complete launch codebase or independent reproduction package.
+- **Link:** https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse
+
+## Evidence footer
+
+- **Coverage window:** 2026-09-09 05:00:00 IST to 2026-09-10 05:00:00 IST.
+- **Retrieval time:** 2026-09-10 05:00 IST.
+- **Retrieval method:** Hermes native web_search and web_extract using the configured Exa-backed web path.
+- **Source classes:** Official company and project blogs, product announcements, GitHub Changelog, and arXiv primary records.
+- **Evidence policy:** Selected claims were checked against opened primary pages. Vendor benchmarks and case studies are labelled as such; preview features and unproven generalization are stated explicitly.
+
