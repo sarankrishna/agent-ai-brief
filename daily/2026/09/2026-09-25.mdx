@@ -1,0 +1,157 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-09-25 IST
+**Coverage:** 2026-09-24 05:00:00 IST to 2026-09-25 05:00:00 IST;
+**Retrieved:** 2026-09-25 05:00 IST
+
+Estimated reading time: 10 minutes. Surfaced signals: 5.
+
+## Three signals that should change your mental model
+
+### 1. Agent governance is becoming a portable supply-chain artifact
+
+Docker proposed Sandbox Kits as OCI images containing the agent, tools, and a typed list of requested hosts, credentials, and volumes, with the specification submitted to CNCF. This is a shift from configuring permissions around a runtime to versioning authority with the agent artifact.
+
+**Why it matters:** reviewers can diff capability requests, registries can sign and scan them, and conforming runtimes can enforce a common description.
+
+**Architectural consequence:** treat agent capability manifests like deployable policy, with review, provenance, pinning, and deny-by-default enforcement.
+
+[Docker Sandbox Kit Spec](https://www.docker.com/blog/docker-sandbox-kit-spec-cncf/)
+
+### 2. Long-running agents are turning execution placement into a first-class design axis
+
+Docker Cloud Sandboxes preserves a microVM isolation model while moving work between laptop and managed cloud with one command. Databricks separately introduced centralized model, tool, spend, routing, and trace controls across coding agents.
+
+**Why it matters:** the operational problem is no longer only model quality. It is durable execution, substrate portability, budget control, and evidence across many agents.
+
+**Architectural consequence:** define workflows independently from compute location, but carry network, secret, filesystem, identity, and cost policy through every move.
+
+[Docker Cloud Sandboxes](https://www.docker.com/blog/introducing-cloud-sandboxes-start-on-your-laptop-finish-in-the-cloud/) · [Databricks Unity Gateway](https://www.databricks.com/blog/deploy-and-manage-coding-agents-scale-unity-gateway-cli)
+
+### 3. Runtime safety is moving toward a closed measurement and enforcement loop
+
+Microsofts run-assert-eval connects threat discovery, fixed-set evaluation, generated runtime policy, and a rerun using the same behavior definition, cases, and judge. The example reduced observed cross-account disclosure from 30.0% to 5.9% in its sample, while Microsoft explicitly frames the generated policy as requiring review.
+
+**Why it matters:** a control is more credible when the intervention is isolated and the comparison is reproducible.
+
+**Architectural consequence:** make safety evaluation a release artifact, not a one-time red-team report, and measure helpfulness alongside violations.
+
+[Microsoft run-assert-eval](https://commandline.microsoft.com/run-assert-eval-responsible-ai-agent-risk-discovery-at-runtime/)
+
+## Ranked technical developments
+
+### 1. Docker submits an open Sandbox Kit specification to CNCF
+
+**Type:** Agent runtime and supply chain.  **Evidence:** Tier 1, official Docker announcement, dated 2026-09-24.  **Maturity:** open specification announcement; Docker Sandboxes is the first named enforcing runtime.
+
+**Why it matters:** a Kit is an ordinary OCI image with the agent, tools, and typed capability requests for hosts, credentials, and volumes. The request set travels with the signed and scanned artifact.
+
+**Architecture read:** package authority as an immutable, reviewable input to runtime admission. This gives platform teams a common control point across agents and MCP-connected tools.
+
+**What is not proven:** cross-runtime conformance, completeness of the capability vocabulary, or adoption beyond the announced ecosystem.
+
+**Decision:** Read deeply.  **Source:** [Docker](https://www.docker.com/blog/docker-sandbox-kit-spec-cncf/)
+
+### 2. Docker extends microVM agent sandboxes from laptop to cloud
+
+**Type:** Agent infrastructure.  **Evidence:** Tier 1, official Docker announcement, dated 2026-09-24.  **Maturity:** available for Personal and Pro accounts with sbx 0.45.1 or later.
+
+**Why it matters:** local and cloud runs use the same microVM model and CLI; a move captures the filesystem and recreates it on the other side. Docker states support for up to 100 parallel tasks, sessions up to 24 hours, and pay-as-you-go compute.
+
+**Architecture read:** long-horizon work needs resumable state, isolated network policy, per-sandbox secrets, and an explicit handoff boundary. A portable execution contract is more valuable than a portable prompt.
+
+**What is not proven:** isolation under adversarial workloads, durability and recovery guarantees, enterprise governance availability, or economics for sustained fleets.
+
+**Decision:** Track.  **Source:** [Docker](https://www.docker.com/blog/introducing-cloud-sandboxes-start-on-your-laptop-finish-in-the-cloud/)
+
+### 3. Databricks introduces centralized governance for coding agents
+
+**Type:** Developer platform and agent operations.  **Evidence:** Tier 1, official Databricks announcement, dated 2026-09-24.  **Maturity:** product announcement with Unity Gateway CLI and supported-agent integration.
+
+**Why it matters:** administrators can publish approved models, MCP servers, skills, spending policies, Smart Routing, cohort rollouts, and traces while developers retain their preferred agent interface. Databricks reports 35% savings on its internal coding benchmark and an estimated $1.2 million annual saving after fixing seven MCP tool bugs, both vendor-reported.
+
+**Architecture read:** model routing, tool policy, identity attribution, and token telemetry should sit at a platform boundary rather than inside each client. Subagent routing needs separate cost and quality observability.
+
+**What is not proven:** independent cost-quality results, portability outside the supported ecosystem, or whether centralized policy preserves developer velocity at scale.
+
+**Decision:** Discuss.  **Source:** [Databricks](https://www.databricks.com/blog/deploy-and-manage-coding-agents-scale-unity-gateway-cli)
+
+### 4. Microsoft packages threat discovery, evaluation, and runtime policy into one workflow
+
+**Type:** Agent evaluation and governance.  **Evidence:** Tier 1, official Microsoft Command Line post, dated 2026-09-24.  **Maturity:** open-source ASSERT and ACS components; new workflow presented as an early skill.
+
+**Why it matters:** run-assert-eval uses Clarity to find risks, ASSERT to measure them, ACS to enforce policy at lifecycle interception points, and a rerun with the same cases and judge. The example shows 12 violations in 40 baseline conversations versus two in 34 governed conversations.
+
+**Architecture read:** preserve the baseline, freeze the test set, isolate the policy as the intervention, and record both safety and helpfulness deltas. Deterministic pre-tool and post-tool checks are preferable to asking a model to judge authorization.
+
+**What is not proven:** generalization from the worked billing example, judge reliability across domains, or production readiness as a release gate.
+
+**Decision:** Experiment.  **Source:** [Microsoft](https://commandline.microsoft.com/run-assert-eval-responsible-ai-agent-risk-discovery-at-runtime/)
+
+### 5. GitHub publishes an autonomous fuzzing taskflow with explicit tool separation
+
+**Type:** Security automation and open source.  **Evidence:** Tier 1, official GitHub Security Lab post, dated 2026-09-24.  **Maturity:** source available; author warns it executes arbitrary LLM-selected build commands on the host and should run in a disposable environment.
+
+**Why it matters:** the taskflow combines harness generation, AFL++ execution, coverage feedback, corpus improvement, crash triage, and reports. The agent makes decisions while MCP tools own execution, and SQLite carries state between stages.
+
+**Architecture read:** separate planning from privileged primitives, persist intermediate evidence, and keep human review on vulnerability verdicts and patches. The two-binary design distinguishes fuzzing instrumentation from readable coverage.
+
+**What is not proven:** bug-finding yield across real projects, false-negative rates, or safe operation outside disposable sandboxes. GitHub explicitly marks suggested patches as review required.
+
+**Decision:** Track.  **Source:** [GitHub Security Lab](https://github.blog/security/application-security/ai-powered-fuzzing-with-the-github-security-lab-taskflow-agent/)
+
+## Signals by track
+
+- **Models:** no qualifying new foundation-model release was selected from the checked primary pages; the material movement was in agent runtimes and control planes.
+
+- **Agents:** long-running unattended execution, portable sandboxes, and centralized agent configuration were the dominant signals.
+
+- **Developer tools:** Databricks supports agent choice behind a governed CLI; GitHub published a taskflow for autonomous fuzzing.
+
+- **Infrastructure:** microVM continuity across local and cloud substrates is now a product feature, not only an internal platform pattern.
+
+- **Open source:** Docker proposed Apache-2.0 Sandbox Kits and Microsofts ASSERT/ACS stack is open source under MIT; GitHub linked the fuzzing taskflow repository.
+
+- **Data/evaluation:** Microsofts fixed-test-set comparison is a concrete pattern for separating a policy effect from test or judge drift.
+
+- **Research:** the checked primary pages yielded implementation-oriented announcements rather than a new research paper suitable for this window.
+
+- **Enterprise/economics:** routing and tracing are moving into shared control planes; vendor savings claims need independent workload replication.
+
+- **Governance/security:** capability manifests, microVM isolation, secret proxying, and pre/post-tool policy checks are converging on defense in depth.
+
+## Architecture patterns emerging
+
+### Authority travels with execution
+
+**Evidence:** Docker Kits package capability requests with the agent; Docker Cloud Sandboxes carry network policy and secrets across local/cloud execution. **Implication:** policy must be portable and versioned with the workload, not reconstructed by each host. **Architects question:** can admission reject a moved agent when its requested authority changes?
+
+### Control planes are becoming model- and client-independent
+
+**Evidence:** Databricks governs multiple coding agents and models through one CLI; Microsofts ACS defines portable interception points across frameworks and policy engines. **Implication:** keep routing, identity, tool authorization, and audit outside individual agent prompts. **Architects question:** what is the minimum provider-neutral contract for tools, traces, and enforcement?
+
+### Evidence-backed autonomy
+
+**Evidence:** Microsoft reruns a fixed evaluation after policy intervention; GitHub persists fuzzing state and coverage; Databricks traces tool calls to find waste. **Implication:** long-running agents need an evidence ledger that supports review, rollback, and cost attribution. **Architects question:** which artifacts are sufficient to reproduce an agents decision without replaying an entire campaign?
+
+## Research and implementation worth your time
+
+1. **Docker Sandbox Kit Spec.** Read the OCI extension, capability typing, signing and scanning path, and the CNCF governance proposal. The specification is open source; cross-runtime conformance and enforcement breadth require independent testing.
+
+2. **Microsoft ASSERT and ACS.** Inspect the fixed-set evaluation workflow, interception points, Rego generation, and helpfulness metrics. The post states that ASSERT and ACS are MIT-licensed and available; reproduce the billing example before treating it as a release gate.
+
+3. **GitHub Security Lab Fuzzing Taskflow.** Inspect the SQLite state model, tool boundary, coverage plateau rule, crash deduplication, and disposable-environment assumptions. Source is available; reproduction requires AFL++, compilers, a target repository, and an isolated runtime.
+
+4. **Databricks Unity Gateway.** Inspect model and subagent routing, MCP policy distribution, trace schema, budget thresholds, and cohort rollout behavior. The announcement is the primary source; its savings figures are vendor-reported and need workload-specific validation.
+
+## Evidence footer
+
+- Window: 2026-09-24 05:00:00 IST to 2026-09-25 05:00:00 IST.
+
+- Retrieval time: 2026-09-25 05:00 IST.
+
+- **Method:** native Hermes `web_search` for discovery and native Hermes `web_extract` for the selected publisher pages. Direct primary pages were opened before inclusion.
+
+- **Source classes:** official Docker, Databricks, Microsoft Command Line, and GitHub Security Lab announcements.
+
+- **Evidence policy:** search results were discovery only. Vendor benchmarks, savings, availability, and capability claims are labelled as vendor-reported or unproven where applicable. No invented discovered or filtered counts are included.
