@@ -1,0 +1,123 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-09-29 IST
+**Coverage:** 2026-09-28 05:00:00 IST to 2026-09-29 05:00:00 IST;
+**Retrieved:** 2026-09-29 05:01 IST
+
+Estimated reading time: 10 minutes
+Surfaced-signal count: 4
+
+## Three signals that should change your mental model
+
+### 1. Agent security is moving below the model boundary
+
+NVIDIA OpenShell 0.1.0 places sandbox, network, credential, audit, and policy controls outside an existing agent workload. Its Gateway, Supervisor, and Sandbox split fleet management, request inspection, and kernel-level workload restrictions. This is a materially different control point from prompt-level safety: the runtime can block a write even when the model or credential would otherwise permit it.
+
+Architectural consequence: treat agent execution as an untrusted workload with an explicit capability boundary, not as an application process with a system prompt. Start with least-privilege network and filesystem policy, separate credentials from the workload, and retain decision logs for review.
+
+[Primary source: NVIDIA, OpenShell 0.1.0](https://developer.nvidia.com/blog/add-runtime-controls-to-ai-agents-with-nvidia-openshell/)
+
+### 2. Generalist computer-use models are converging on one agent loop across interfaces
+
+Hcompany released Holo4-27B and Holo4-35B-A3B, with weights in several formats, trained to combine GUI actions, code execution, MCP, and APIs. Its reported OSWorld 2.0 results show a low-cost open-weight option, but the publisher also notes that harnesses, task subsets, and reference runs differ.
+
+Architectural consequence: the durable abstraction is increasingly the harness, memory, tool policy, and evaluation loop. Model selection should be measured against the interface mix and recovery behavior of the workload, not a single benchmark score.
+
+[Primary source: Hcompany on Hugging Face, Holo4](https://huggingface.co/blog/Hcompany/holo4)
+
+### 3. AI-factory capacity is becoming a control-loop problem
+
+NVIDIA reports a GB300 NVL72 evaluation where DSX MaxLPS increased managed GPUs from 140 to 192 within the same 264.4 kW provisioned budget, with 49.2% higher aggregate throughput. The same test reported a 17% increase in P99 time to first token, so the result is capacity evidence, not a blanket production guarantee.
+
+Architectural consequence: capacity planning must include power telemetry, policy, workload placement, and tail-latency acceptance criteria. Tokens per watt is useful only alongside SLOs and fault-transition behavior.
+
+[Primary source: NVIDIA, DSX MaxLPS evaluation](https://developer.nvidia.com/blog/how-nvidia-dsx-maxlps-maximizes-ai-factory-throughput-and-efficiency/)
+
+## Ranked technical developments
+
+### 1. NVIDIA OpenShell 0.1.0 adds an external enforcement layer for agents
+
+- **Type:** Agent runtime and security platform release
+- **Evidence:** Tier 1, official NVIDIA technical post dated 2026-09-28. The post documents Gateway, Supervisor, Sandbox, kernel controls, inspected HTTP/GraphQL/MCP traffic, credential protection, OCSF audit records, and formal policy analysis.
+- **Maturity:** 0.1.0, open source, early platform. Adoption examples are vendor-reported.
+- **Why it matters:** It makes least privilege enforceable outside the model and outside agent-generated code.
+- **Architecture read:** Put the agent in a sandbox with no direct network path; mediate service access through an external supervisor; bind credentials to approved destinations and operations; make policy changes explicit and reviewable.
+- **What is not proven:** The post does not establish broad independent production performance, coverage of every protocol or escape path, or that formal analysis models all emergent multi-agent permission compositions.
+- **Decision:** Read deeply.
+- **Source:** [NVIDIA OpenShell 0.1.0](https://developer.nvidia.com/blog/add-runtime-controls-to-ai-agents-with-nvidia-openshell/)
+
+### 2. Holo4 targets cross-interface computer use with open weights
+
+- **Type:** Open-weight agentic model release
+- **Evidence:** Tier 1, publisher post dated 2026-09-28. Holo4 is offered as 27B dense and 35B-A3B MoE, with FP16, FP8, NVFP4, and GGUF artifacts, plus trajectories and a dataset link.
+- **Maturity:** Available through H Models API and Hugging Face weights; independently reproducible evaluation remains incomplete.
+- **Why it matters:** A single model interface spanning GUI, code, MCP, and APIs reduces routing complexity for workflows that cross application boundaries.
+- **Architecture read:** Evaluate the model together with its action harness, persistent memory, desktop shell, and tool isolation. Keep interface-specific fallbacks because failure recovery and state synchronization are likely to dominate.
+- **What is not proven:** The OSWorld and AutomationBench comparisons are not apples-to-apples across all references; the publisher says private-set evaluation for Holo4 is still pending and cost estimates depend on harness and pricing assumptions.
+- **Decision:** Experiment.
+- **Source:** [Holo4](https://huggingface.co/blog/Hcompany/holo4)
+
+### 3. GitHub Copilot makes Claude Sonnet 5.5 generally available
+
+- **Type:** Developer-tool model availability
+- **Evidence:** Tier 1, GitHub Changelog dated 2026-09-28. Availability covers Copilot plans and major IDEs, CLI, coding agent, web, and mobile, with gradual rollout.
+- **Maturity:** Generally available, subject to rollout and plan policy.
+- **Why it matters:** Model choice is becoming a normal control-plane concern in coding-agent fleets, with provider pricing and model policy affecting architecture and cost.
+- **Architecture read:** Keep model selection policy-driven and observable. Compare task completion, tool-call count, latency, and review burden rather than relying on model labels.
+- **What is not proven:** GitHub reports early testing that matched Sonnet 5 on coding tasks with fewer steps, tokens, and tool calls, but supplies no detailed benchmark protocol in this announcement.
+- **Decision:** Track.
+- **Source:** [GitHub Changelog](https://github.blog/changelog/2026-09-28-claude-sonnet-5-5-in-github-copilot/)
+
+### 4. DSX MaxLPS demonstrates power-governed AI-factory headroom
+
+- **Type:** Inference infrastructure and power-management evaluation
+- **Evidence:** Tier 1, NVIDIA technical post dated 2026-09-27. The controlled workload used Kimi K2.5 in FP4, 8K input, 1K output, and GB300 NVL72 systems; aggregate throughput rose from 1,084,503 to 1,618,443 tokens/s under the same provisioned budget.
+- **Maturity:** Evaluation, not a general production benchmark.
+- **Why it matters:** Static peak-power reservations can strand capacity; a policy-governed control loop can trade aggregate headroom against latency and reserves.
+- **Architecture read:** Couple GPU power telemetry and placement policy to inference admission control, and validate median, P75, P99, transitions, telemetry failures, and reduced-power operation.
+- **What is not proven:** The evaluation is vendor-led and workload-specific. P99 time to first token increased 17%, and results do not establish the same behavior across models, topologies, cooling, or service mixes.
+- **Decision:** Discuss.
+- **Open loop:** Obtain independent measurements for the target workload mix before using tokens-per-watt gains in capacity or cost forecasts.
+- **Source:** [NVIDIA DSX MaxLPS](https://developer.nvidia.com/blog/how-nvidia-dsx-maxlps-maximizes-ai-factory-throughput-and-efficiency/)
+
+## Signals by track
+
+- **Models:** Holo4 adds open weights for a model designed to move between GUI, code, MCP, and API interaction.
+- **Agents:** OpenShell treats agent permissions as runtime policy, including sub-processes and proposed policy changes.
+- **Developer tools:** Claude Sonnet 5.5 is rolling into GitHub Copilot across coding surfaces.
+- **Infrastructure:** DSX MaxLPS reports higher aggregate inference throughput under a fixed power budget, with a tail-latency cost.
+- **Open source:** Holo4 weights, trajectories, and dataset links are published; OpenShell is described as open source under Apache 2.0.
+- **Data and evaluation:** Holo4 reports OSWorld 2.0 and AutomationBench results, but highlights differing harnesses and reference sets.
+- **Research:** No new paper was selected from the checked primary pages in the exact window; the strongest evidence was in product and engineering releases.
+- **Enterprise and economics:** Power allocation and per-task model efficiency are becoming first-class inputs to AI-factory economics.
+- **Governance and safety:** External enforcement, credential isolation, auditability, and human review of policy changes are recurring design primitives.
+
+## Architecture patterns emerging
+
+### Externalize the capability boundary
+
+**Evidence:** OpenShell and Claude Managed Agents both separate agent reasoning from sandbox execution, credentials, and enforcement.
+**Implication:** Design agents as principals operating through a brokered capability system. Prompt instructions remain useful for intent, but authorization belongs in independently enforced runtime policy.
+**Architects question:** Can every consequential tool call be attributed, authorized, replayed, and denied without trusting the model explanation?
+
+### Evaluate the agent system, not only the model
+
+**Evidence:** Holo4 emphasizes its harness, memory, shell, trajectories, and interface mix; GitHub describes coding efficiency using steps, tokens, and tool calls; DSX evaluates throughput with latency and power telemetry.
+**Implication:** The unit of performance is the complete loop: model, context strategy, tools, retries, sandbox, workload placement, and SLO measurement.
+**Architects question:** Which workload-specific traces are required to compare a model or runtime change without confounding harness changes?
+
+## Research and implementation worth your time
+
+1. **OpenShell repository and policy model.** Read to inspect the Gateway/Supervisor/Sandbox split, credential binding, OPA/Rego policy path, audit schema, and policy prover boundaries. Code and quickstart are linked from the [official NVIDIA post](https://developer.nvidia.com/blog/add-runtime-controls-to-ai-agents-with-nvidia-openshell/). Reproduction status: a local policy demo is described by the publisher; independent validation is still required.
+
+2. **Holo4 weights, trajectories, and benchmark harness.** Read to inspect cross-interface action representations, memory over long runs, failure labels, and the evidence behind OSWorld 2.0 and AutomationBench claims. Code/data status: weights, trajectories, and a dataset link are published from the [Holo4 release page](https://huggingface.co/blog/Hcompany/holo4). Reproduction status: check task and harness parity before comparing scores.
+
+3. **DSX MaxLPS control loop.** Read to inspect telemetry granularity, allocation policy, reserve handling, and failure transitions. The [NVIDIA evaluation](https://developer.nvidia.com/blog/how-nvidia-dsx-maxlps-maximizes-ai-factory-throughput-and-efficiency/) provides a five-stage validation sequence and workload parameters. Reproduction status: target hardware and software are not available in this report; reproduce with representative traffic before adoption.
+
+## Evidence footer
+
+- **Coverage window:** 2026-09-28 05:00:00 IST to 2026-09-29 05:00:00 IST; equivalent to 2026-09-27 23:30:00 UTC to 2026-09-28 23:30:00 UTC.
+- **Retrieval time:** 2026-09-29 05:01 IST.
+- **Retrieval method:** Native Hermes `web_search` for discovery and native `web_extract` for the opened publisher pages. The repository source-map file was not present in the checked working tree, so source selection used the skill hierarchy and direct official pages.
+- **Source classes:** Official NVIDIA technical posts, GitHub Changelog, and Hcompany publisher release page on Hugging Face.
+- **Evidence policy:** Selected claims were checked against opened primary pages. Vendor-reported benchmarks, availability, adoption, and maturity are labelled as such; no production-readiness inference is made from announcements alone.
