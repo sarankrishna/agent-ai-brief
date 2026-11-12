@@ -1,0 +1,74 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-11-13 IST
+**Coverage:** 2026-11-12 05:00:00 IST to 2026-11-13 05:00:00 IST;
+**Retrieved:** 2026-11-13 05:00 IST
+
+Estimated reading time: 6 minutes. Surfaced signals: 3 ranked developments.
+
+## Three signals that should change your mental model
+
+1. **Agent isolation is evolving into an end-to-end data boundary.** AWS describes session-level microVM isolation, identity and policy, plus filesystem mounting that keeps task data within the session boundary. The architectural question shifts from “is the process sandboxed?” to “how do identity, storage, egress and audit remain scoped across long-running work?” [AWS AgentCore runtime](https://aws.amazon.com/blogs/machine-learning/run-agents-securely-and-efficiently-with-the-next-generation-agentcore-runtime/)
+
+2. **Inference portability is moving below the serving API.** AWS makes SGLang work with Trainium through an out-of-tree plugin while retaining SGLang’s server, scheduling and prefix-cache responsibilities. The portability win is meaningful, but only for validated models, kernels and hardware configurations. [SGLang-Neuron](https://aws.amazon.com/blogs/machine-learning/deploy-frontier-ai-models-on-aws-trainium-with-sglang-neuron/)
+
+3. **Prompt-injection mitigation is being explored at the representation layer.** IBM Granite’s experimental LLMON previews use dedicated structural tokens to separate instructions and payloads. This is a testable model-and-format approach, not a universal replacement for tool authorization or input isolation. [LLMON announcement](https://huggingface.co/blog/ibm-granite/llmon-an-llm-native-markup-language-now-in-granite)
+
+## Ranked technical developments
+
+### 1. AWS expands AgentCore Runtime isolation, capacity and in-boundary storage
+
+- **Type:** Managed agent runtime / infrastructure release
+- **Evidence:** Tier 1, AWS engineering announcement dated 12 Nov 2026.
+- **Maturity:** Announced product update; AWS reports each session runs in a hardware-isolated Firecracker microVM with its own identity, policy and audit trail.
+- **Why it matters:** AWS reports sessions start in under two seconds, support up to 8 vCPUs and 32 GB, and handle container images up to 10 GB. It also describes mounting and saving work to storage such as S3 from within a session. These changes target cold-start, compute ceiling and data-boundary bottlenecks in long-running agents.
+- **Architecture read:** Evaluate per-session identity and authorization, durable-state lifecycle, filesystem mount controls, audit completeness, and whether credentials remain session-bound. AWS says per-session storage scoping through session-labelled credentials is planned by re:Invent, so do not assume that stronger isolation behavior is already present.
+- **What is not proven:** Published “up to” performance/economics figures are vendor claims; the announcement does not provide a workload-independent benchmark or prove that customer-specific storage and network policies are correctly configured.
+- **Decision:** Track
+- **Source:** [AWS announcement](https://aws.amazon.com/blogs/machine-learning/run-agents-securely-and-efficiently-with-the-next-generation-agentcore-runtime/)
+
+### 2. SGLang-Neuron brings the SGLang serving interface to AWS Trainium
+
+- **Type:** Inference serving / hardware ecosystem
+- **Evidence:** Tier 1, AWS technical article dated 12 Nov 2026.
+- **Maturity:** Publicly available through an AWS Deep Learning Container; AWS documents an example using a Trainium3 EC2 instance.
+- **Why it matters:** An out-of-tree plugin maps Trainium-specific model execution, attention, MoE and graph runner into SGLang. SGLang retains its API server, request lifecycle, RadixAttention and prefix-cache bookkeeping. The article also describes prefill/decode disaggregation with KV-cache transfer via NIXL over EFA.
+- **Architecture read:** An adapter boundary can preserve serving-layer workflow while allowing hardware-specific kernels and compilation to evolve independently. The deployment example’s model support and configuration are the meaningful constraint, not API resemblance alone.
+- **What is not proven:** The post supplies no comparative latency, throughput, cost or operational reliability results. It is not evidence of feature parity across SGLang models or across accelerator generations.
+- **Decision:** Experiment
+- **Source:** [AWS SGLang-Neuron guide](https://aws.amazon.com/blogs/machine-learning/deploy-frontier-ai-models-on-aws-trainium-with-sglang-neuron/)
+
+### 3. IBM Granite previews LLMON, a structured representation for model context
+
+- **Type:** Model format / prompt-injection research and tooling
+- **Evidence:** Tier 1, IBM Granite post hosted on Hugging Face, published 12 Nov 2026.
+- **Maturity:** Experimental preview models derived from Granite 4.1 3B and 8B; the authors explicitly say the previews are not for production. Toolkit, examples and notebooks are linked.
+- **Why it matters:** LLMON uses reserved special-token delimiters and explicit tags/IDs to mark context components and bind instructions to data. IBM reports near-zero attack success on some benchmarks while maintaining general capability relative to Granite 4.1 Instruct.
+- **Architecture read:** Treat it as a serialization and training co-design experiment. It may reduce ambiguity inside model context, but it does not replace least-privilege tools, provenance controls, output validation or sandboxing.
+- **What is not proven:** The post does not establish broad generalization across models, attack families, long contexts or production workloads. “Some benchmarks” is not a sufficiently detailed basis for security guarantees.
+- **Decision:** Read deeply
+- **Source:** [IBM Granite LLMON announcement](https://huggingface.co/blog/ibm-granite/llmon-an-llm-native-markup-language-now-in-granite)
+
+## Signals by track
+
+- **Agents and runtime:** AWS is expanding per-session isolated runtime capacity and the storage boundary; key implementation details to inspect are credential scope, persistence and egress.
+- **Inference and chips:** SGLang-Neuron is publicly available on Trainium, with an adapter/plugin boundary and a documented Trainium3 example.
+- **Models and safety:** IBM Granite publishes experimental 3B/8B LLMON previews and a toolkit for explicit context structure; production use is disclaimed.
+- **Developer security:** Semgrep announced an agent-oriented AppSec platform and MCP integration on 12 Nov. Its claims about remediation speed and coverage are vendor-reported, not independently evaluated here. [Semgrep announcement](https://semgrep.dev/blog/2026/agentic-appsec-platform/)
+- **Frontier labs:** Checked OpenAI product releases and Anthropic newsroom pages; no newer qualifying technical announcement was verified within this coverage window.
+
+## Architecture patterns emerging
+
+Two independently published items support a cautious pattern: **agent safety is being pushed into execution and context boundaries, rather than left solely to model behavior.** AWS applies identity, policy and isolation around execution and data; IBM tests structural separation of instructions from payloads inside the model representation. These address different threat surfaces and should be layered, not treated as substitutes.
+
+**Architect’s question:** Can policy, provenance and trust boundaries be carried consistently from retrieved content, through model context, into tool execution and persisted artifacts?
+
+## Research and implementation worth your time
+
+1. **LLMON models and toolkit.** Read to evaluate whether explicit structural tokens reduce instruction/data confusion. Inspect benchmark definitions, attack prompts, capability comparisons and conversion behavior. The announcement links [models/toolkit and examples](https://github.com/generative-computing/llmon); status is experimental preview, with code and notebooks available according to the publisher. [Paper](https://arxiv.org/abs/2610.38120).
+2. **SGLang-Neuron deployment path.** Inspect plugin registration, supported-model matrix and prefill/decode deployment details before estimating portability. The AWS post documents a container-based quickstart; it gives no comparative performance data. [Technical guide](https://aws.amazon.com/blogs/machine-learning/deploy-frontier-ai-models-on-aws-trainium-with-sglang-neuron/).
+3. **AgentCore isolation semantics.** Review session identity, filesystem mounts, audit and forthcoming session-scoped storage credentials against a threat model. The source is a product description, not a reproducible benchmark; reported performance is vendor-provided. [AWS announcement](https://aws.amazon.com/blogs/machine-learning/run-agents-securely-and-efficiently-with-the-next-generation-agentcore-runtime/).
+
+## Evidence footer
+
+Coverage: 2026-11-12 05:00:00 IST to 2026-11-13 05:00:00 IST. Retrieved: 2026-11-13 05:00 IST. Retrieval: native Hermes web_search and web_extract, plus inspection of the configured source map. Primary sources used: AWS Machine Learning Blog, IBM Granite/Hugging Face, and Semgrep. Company announcements and reported performance/security results are attributed to their publishers; no independent reproduction was verified. The dated official OpenAI product and Anthropic newsroom pages were checked for this window. No discovered/filtered-source totals are asserted.
