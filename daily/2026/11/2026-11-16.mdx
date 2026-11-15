@@ -1,0 +1,56 @@
+# Daily AI Technology Intelligence Briefing
+
+**Report date:** 2026-11-16 IST
+**Coverage:** 2026-11-15 05:00:00 IST to 2026-11-16 05:00:00 IST;
+**Retrieved:** 2026-11-16 05:00 IST
+
+## Three signals that should change your mental model
+
+Only one qualifying, primary-source-verified engineering signal emerged from this scan. Broader search results included candidate announcements whose primary pages were dated outside the window or had inconsistent dates; they are excluded.
+
+1. **Agent safety is being tightened at the boundary between model output and tool execution.** Senpi now preserves tool-result typing when forwarding output to Claude Code, so tool text cannot be interpreted as a slash command. This is a concrete defense against one tool-output command-injection path, not evidence that the class of attack is solved. [Release notes](https://github.com/code-yeongyu/senpi/releases/tag/v2026.11.15).
+
+**Why it matters:** Agent integrations relay untrusted tool output across protocol boundaries. Maintaining provenance and message type complements permissions and sandboxing.
+
+**Architectural consequence:** Treat tool output as untrusted data end to end. Preserve role/type metadata through adapters, and test that hostile tool text cannot become an assistant command or user-entered control syntax.
+
+## Ranked technical developments
+
+### 1. Senpi hardens tool-output handling and project-write scope
+
+- **Type:** Agent runtime release; security and reliability fixes.
+- **Evidence:** Tier 1, official GitHub release notes, published 2026-11-15 05:53:23 UTC (11:23 IST), within this coverage window.
+- **Maturity:** Shipped release v2026.11.15.
+- **Why it matters:** The release says Claude subscription tool output is always forwarded to Claude Code marked as tool output, preventing it from being read as a slash command. It also adds optional `expectedCwd` checks to RPC project-write methods, refusing the write when the session is in a different working directory.
+- **Architecture read:** This pairs provenance preservation at the tool boundary with an explicit working-directory precondition for project writes. The latter makes location part of the authorization context rather than trusting ambient session cwd.
+- **What is not proven:** Release notes do not provide independent security testing, exploit reproduction, coverage details for all adapters, or evidence that every project-write call supplies `expectedCwd`. The cwd check is optional.
+- **Decision:** Track.
+- **Source:** [Senpi v2026.11.15 release](https://github.com/code-yeongyu/senpi/releases/tag/v2026.11.15)
+
+## Signals by track
+
+- **Models:** No model announcement verified from an opened primary source within this scan.
+- **Agents:** Senpi release strengthens tool-output typing and offers an optional cwd precondition for RPC project writes. [Release](https://github.com/code-yeongyu/senpi/releases/tag/v2026.11.15)
+- **Developer tools:** One relevant agent-runtime release verified; broader index hits were not counted without primary-source confirmation and in-window dates.
+- **Inference and infrastructure:** No qualifying primary-source item verified in the checked pages.
+- **Security and safety:** Tool results are kept typed as tool output at a Claude Code integration boundary. This narrows one command-injection path but is not proof of overall agent safety. [Release](https://github.com/code-yeongyu/senpi/releases/tag/v2026.11.15)
+- **Open source:** Senpi published v2026.11.15 with downloadable platform artifacts and a SHA256SUMS asset listed in the release.
+- **Data and evaluation:** No new independently verified benchmark or evaluation result surfaced.
+- **Research:** No qualifying primary paper verified in the checked results.
+- **Enterprise and economics:** No qualifying primary-source change verified.
+- **Governance:** No qualifying primary-source change verified.
+
+## Architecture patterns emerging
+
+Insufficient independent in-window evidence to establish a cross-item pattern. The single verified release illustrates two defense-in-depth ideas: preserve data/control provenance across tool adapters, and bind project-write authorization to an expected working directory.
+
+## Research and implementation worth your time
+
+1. **Inspect Senpi v2026.11.15 changes #6667 and #6659.** Read the source diff behind the release notes to see how tool-result typing is preserved through the Claude Code adapter and how `expectedCwd` is checked on RPC writes. **Code:** linked from the release commit references. **Reproduction:** not described by the release notes; validate with an integration test using tool output that resembles a slash command, and a write request from a mismatched cwd.
+
+## Evidence footer
+
+Coverage window in UTC: 2026-11-14 23:30:00 to 2026-11-15 23:30:00.
+Retrieval: Native web_search and web_extract; checked primary release pages and broad AI/developer-tool discovery results.
+Evidence policy: Only claims verified on an opened publisher/repository page and dated within the exact window are ranked. Search snippets were discovery only. Older or date-inconsistent candidates were omitted. No discovered/filtered totals are asserted.
+
