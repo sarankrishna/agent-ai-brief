@@ -1,0 +1,98 @@
+**Report date:** 2026-11-18 IST
+**Coverage:** 2026-11-17 05:00:00 IST to 2026-11-18 05:00:00 IST;
+**Retrieved:** 2026-11-18 05:00 IST
+
+## Three signals that should change your mental model
+
+### The coding-model market is separating capability from cost
+Microsoft launched two coding models tuned for everyday enterprise workloads, explicitly distinguishing routine/repository work from very long-horizon agent work. The practical shift is not a universal best model, but workload-specific routing and measured cost per resolved task. Microsoft reports strong relative benchmark results, but its comparisons are vendor-published and include promotional pricing. [Primary source](https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/)
+
+### Agent orchestration is becoming collaborative rather than merely delegated
+Perplexity describes a multi-model team that shares evidence and coordinates changes to shared files, beyond the lead-and-worker delegation pattern. The design makes shared state, conflict resolution, and audit trails first-order engineering concerns. Availability is limited to Perplexity Max web subscribers; the announcement does not establish independent quality gains from adding agents. [Primary source](https://www.perplexity.ai/hub/blog/introducing-computer-multiagent)
+
+### Robotics tooling is collapsing the integration surface, not eliminating physical validation
+Google combines a faster embodied model with an Antigravity workflow for hardware setup, simulation, and closed-loop control. This points toward IDE-like tooling for robot application development, but vendor demos and a small task benchmark do not establish robustness across hardware, safety cases, or deployment conditions. [Primary source](https://developers.googleblog.com/gemini-hydrogen-for-robotics/)
+
+## Ranked technical developments
+
+### 1. GPT-6.2 Astra and Sol target long-horizon work and lower cost per task
+- **Type:** Model release. **Evidence:** Tier 1, official OpenAI launch page, retrieved 2026-11-18.
+- **Maturity:** Available through ChatGPT Work/Codex and API, per OpenAI.
+- **Why it matters:** OpenAI reports improved professional-work and coding benchmark results with fewer output tokens; Astra input/output token prices are stated as 20% below GPT-6 Astra, with a deeper cached-input reduction. This could alter cost/performance routing for complex tasks.
+- **Architecture read:** Benchmark at task level, including tool calls, retries, latency, and cache reuse. OpenAI specifically recommends stable prompt prefixes and appending instructions to improve cache reuse and preserve reasoning across turns.
+- **What is not proven:** Headline evaluations are vendor-reported and task-specific; they do not establish production reliability or equivalent performance on your workload. Some comparisons use different settings and exclusions.
+- **Decision:** Experiment
+- **Source:** [OpenAI: Introducing GPT-6.2 Astra and Sol](https://openai.com/index/introducing-gpt-6-2-astra-sol/)
+
+### 2. Microsoft launches workload-segmented coding models
+- **Type:** Model and developer-tool release. **Evidence:** Tier 1, official Microsoft AI announcement.
+- **Maturity:** MAI Code 2 and Code 2 Flash available in GitHub Copilot; Flash in limited-access Foundry preview.
+- **Why it matters:** Microsoft positions Code 2 for debugging, multi-file implementation and repository reasoning, and Flash for high-volume routine edits. Its published benchmark average claims Code 2 reaches 98% of GPT-6.1 Sol performance at 40% of cost, with notable pricing caveats.
+- **Architecture read:** Consider routing by task class, escalation thresholds, and acceptance tests rather than selecting one model globally. Include promotional pricing and inference configuration in any cost comparison.
+- **What is not proven:** Benchmarks and cost comparisons are vendor-run/mixed-source, and Microsoft says these models are not tuned for very long-horizon agent work.
+- **Decision:** Track
+- **Source:** [Microsoft AI: MAI Code 2 and Code 2 Flash](https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/)
+
+### 3. Google packages robotics bring-up, simulation, and control in Antigravity
+- **Type:** Embodied model and developer workflow release. **Evidence:** Tier 1, Google Developers Blog.
+- **Maturity:** Gemini 4 Hydrogen is available through the Gemini API and Google AI Studio; the Robotics plugin is for Antigravity.
+- **Why it matters:** The announced plugin combines hardware onboarding, MuJoCo simulation, perception, and control, reducing bespoke integration work for prototypes. Google reports score 58 on Artificial Analysis Robotics 0.1 across eight tabletop tasks on a real six-axis arm.
+- **Architecture read:** Treat the IDE as orchestration and development surface. Preserve hard safety interlocks, hardware-specific validation, and an explicit simulation-to-real acceptance gate.
+- **What is not proven:** Eight tasks and demonstrations do not establish generality, repeatability, safety, or performance across robot platforms and environments.
+- **Decision:** Track
+- **Source:** [Google Developers Blog: Gemini 4 Hydrogen](https://developers.googleblog.com/gemini-hydrogen-for-robotics/)
+
+### 4. SageMaker adds inspectable dataset preparation workflows
+- **Type:** ML platform capability. **Evidence:** Tier 1, AWS Machine Learning Blog.
+- **Maturity:** Generally available in US East (N. Virginia) and US West (Oregon), per AWS.
+- **Why it matters:** Auto-labeling, confidence-based human review, synthetic data generation, data-quality checks for duplicates/leakage, and transformations are exposed as composable SDK/agent-invoked capabilities. Code and specifications are reviewable, while datasets stay in customer S3 buckets.
+- **Architecture read:** This makes dataset curation a versioned pipeline candidate. Retain provenance, review low-confidence labels, and independently test synthetic data for leakage and distribution drift before training.
+- **What is not proven:** AWS examples and customer testimony do not establish quality on arbitrary datasets; model-as-judge metrics need task-specific validation.
+- **Decision:** Experiment
+- **Source:** [AWS: AI data preparation in SageMaker](https://aws.amazon.com/blogs/machine-learning/announcing-ai-data-preparation-capabilities-in-amazon-sagemaker-build-high-quality-datasets-for-model-development-workflows/)
+
+### 5. Perplexity adds an agent mode with direct cross-agent collaboration
+- **Type:** Multi-agent product release. **Evidence:** Tier 1, official Perplexity announcement.
+- **Maturity:** Available to Perplexity Max subscribers on web.
+- **Why it matters:** Up to 16 agents can work on a task; agents can share findings, challenge assumptions, and coordinate edits to shared files. This is a concrete product expression of inter-agent communication rather than isolated worker outputs.
+- **Architecture read:** Shared mutable artifacts increase the importance of ownership boundaries, provenance, conflict handling, and rollback. Evaluate against a single-agent baseline and measure additional cost and latency.
+- **What is not proven:** The announcement provides no independent evaluation that collaboration improves accuracy or reduces total work.
+- **Decision:** Track
+- **Source:** [Perplexity: Introducing Multiagent](https://www.perplexity.ai/hub/blog/introducing-computer-multiagent)
+
+### 6. New benchmark tests scientific judgment under flawed simulation
+- **Type:** Research submission and benchmark. **Evidence:** Tier 1 primary paper, arXiv submission dated 2026-11-17.
+- **Maturity:** Research benchmark; authors report releasing environment, graders, and harness.
+- **Why it matters:** SciResearch-Eval tests whether agents recognize model misspecification, design informative experiments, and report calibrated uncertainty, rather than simply fitting a simulator. The paper reports large calibration failures for several models when the simulator omits physics.
+- **Architecture read:** For scientific agents, correctness must include model adequacy checks and calibrated uncertainty, not just a fit score. Independent experimental design and held-out physical ground truth are valuable evaluation elements.
+- **What is not proven:** One thermal-properties task cannot establish broad scientific-agent capability; the reported results need reproduction and scrutiny of the benchmark construction.
+- **Decision:** Read deeply
+- **Source:** [arXiv: SciResearch-Eval](https://arxiv.org/abs/2611.21541)
+
+## Signals by track
+
+- **Models:** OpenAI announced GPT-6.2 Astra and Sol; Microsoft introduced MAI Code 2 and Flash. Vendor claims require workload-specific validation.
+- **Agents:** Perplexity Multiagent enables direct communication and shared-file coordination among up to 16 agents.
+- **Developer tools:** Microsoft says the new coding models are available in Copilot; Google added a Robotics plugin to Antigravity.
+- **Infrastructure and data:** AWS SageMaker AI introduced data labeling, synthetic generation, quality evaluation, and transformation capabilities.
+- **Research and evaluation:** SciResearch-Eval probes experimental judgment and uncertainty calibration under a deliberately flawed simulator.
+- **Enterprise/economics:** Model announcements emphasize cost per task and task-specific small/fast versus frontier choices; validate total cost including orchestration and review.
+- **Security and safety:** No independently verified security incident or broadly generalizable safety result emerged in the checked primary-source scan. Google robotics demonstrations still require physical safety controls.
+- **Open source:** No sufficiently verified, high-impact open-source release was selected from the checked window.
+
+## Architecture patterns emerging
+
+1. **Route by task economics, then escalate:** OpenAI and Microsoft both frame model choice around task complexity and cost, while Microsoft explicitly carves out very long-horizon work. Implement routing against measured success, retries, latency, and effective cost, not model labels or headline averages.
+2. **Agent coordination requires a shared-state control plane:** Perplexity’s shared findings and coordinated file edits imply provenance, conflict resolution, scoped write permissions, and human review are part of the agent architecture, not optional observability.
+3. **Tooling is moving upstream into data and simulation preparation:** AWS packages dataset preparation and Google packages robotics setup/simulation. The common implication is to make generated workflows inspectable and place human/automated validation gates before costly training or physical actuation.
+
+## Research and implementation worth your time
+
+- **SciResearch-Eval** ([paper](https://arxiv.org/abs/2611.21541)): Read for its experimental-design and calibration protocol, especially the deliberately misspecified simulator and held-out evaluation. Inspect the intervention budget, scoring, and pre-registered effort ablation. Authors state the environment, graders, and harness are released; verify repository and reproduction instructions before adopting results.
+- **GPT-6.2 evaluation and caching guidance** ([announcement](https://openai.com/index/introducing-gpt-6-2-astra-sol/)): Inspect task-level benchmark definitions, token use, and stable-prefix/cache guidance. No independent reproduction established in this scan.
+- **SageMaker data preparation** ([AWS technical announcement](https://aws.amazon.com/blogs/machine-learning/announcing-ai-data-preparation-capabilities-in-amazon-sagemaker-build-high-quality-datasets-for-model-development-workflows/)): Inspect generated specifications and transformation code, confidence-based review queues, and leakage checks. AWS documents Python SDK/agent-skill access; practical reproduction depends on regional availability and account access.
+
+## Evidence footer
+
+Coverage window: 2026-11-17 05:00:00 IST to 2026-11-18 05:00:00 IST. Retrieval time: 2026-11-18 05:00 IST.
+Retrieval used native Hermes web_search and web_extract. Primary-source classes checked: official model/company announcements, cloud platform documentation/news, Google developer blog, and arXiv recent submissions. Selected claims are linked to opened publisher pages; benchmark and capability statements are attributed to their publishers and are not treated as independently reproduced. Search coverage is not exhaustive. The configured source-map file was not present at the expected references/source-map.md path.
